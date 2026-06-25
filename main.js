@@ -251,8 +251,17 @@ document.getElementById('resume-form')?.addEventListener('submit', function (e) 
     btn.querySelector('span').textContent = 'Continuing…';
 
     const year = document.getElementById('undergradYear').value.trim();
+    const yr   = parseInt(year, 10);
+
+    // Route each class year to its dedicated registration form.
+    // Add new entries here as forms for additional years are built.
+    const routes = {
+        2026: 'registration-2026.html',
+    };
+    const dest = routes[yr] || 'registration.html';
+
     setTimeout(() => {
-        window.location.href = `registration.html?year=${encodeURIComponent(year)}`;
+        window.location.href = `${dest}?year=${encodeURIComponent(year)}`;
     }, 450);
 });
 

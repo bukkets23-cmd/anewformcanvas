@@ -1,0 +1,308 @@
+/* registration-2026.css — styles for the 2026 analyst registration form */
+
+/* ── PAGE PIPS (dot indicator) ── */
+.page-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 10px 0 4px;
+}
+
+.page-pip {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gray-200);
+    transition: all 0.3s ease;
+}
+
+.page-pip.active {
+    background: var(--gold);
+    width: 22px;
+    border-radius: 4px;
+}
+
+
+/* ── FORM PAGES (show/hide) ── */
+.form-page {
+    display: none;
+}
+
+.form-page.active {
+    display: block;
+    animation: pageFadeIn 0.3s ease forwards;
+}
+
+@keyframes pageFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0);   }
+}
+
+
+/* ── SELECT / DROPDOWN ── */
+.select-wrap {
+    position: relative;
+}
+
+.select-wrap select {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    height: 44px;
+    padding: 0 40px 0 14px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--gray-800);
+    background: var(--white);
+    cursor: pointer;
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.select-wrap select:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+}
+
+.select-wrap select.has-error {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.10);
+}
+
+.select-wrap select:invalid,
+.select-wrap select option[value=""] {
+    color: var(--gray-400);
+}
+
+.select-wrap select option:not([value=""]) {
+    color: var(--gray-800);
+}
+
+.select-arrow {
+    position: absolute;
+    right: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--gray-400);
+}
+
+
+/* ── DATE INPUT ── */
+input[type="date"] {
+    height: 44px;
+    padding: 0 14px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--gray-800);
+    background: var(--white);
+    outline: none;
+    width: 100%;
+    cursor: pointer;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+input[type="date"]:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+}
+
+input[type="date"].has-error {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.10);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0.5;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+
+/* ── FIELD HINT ── */
+.field-hint {
+    font-size: 0.74rem;
+    color: var(--gray-400);
+    margin-top: -2px;
+    line-height: 1.5;
+}
+
+
+/* ── QUESTION BLOCK ── */
+.question-block {
+    margin-bottom: 32px;
+}
+
+.question-block:last-child {
+    margin-bottom: 0;
+}
+
+.question-text {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--gray-800);
+    margin-bottom: 14px;
+    line-height: 1.55;
+}
+
+.question-text em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--gray-600);
+}
+
+
+/* ── RADIO GROUP ── */
+.radio-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px 14px;
+}
+
+.radio-group.stacked {
+    grid-template-columns: 1fr;
+}
+
+.radio-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1.5px solid var(--gray-200);
+    cursor: pointer;
+    user-select: none;
+    transition: border-color var(--transition), background var(--transition);
+}
+
+.radio-item:hover {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.04);
+}
+
+.radio-item input[type="radio"] {
+    display: none;
+}
+
+.radio-dot {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    border: 2px solid var(--gray-400);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    transition: all var(--transition);
+}
+
+.radio-item input:checked ~ .radio-dot {
+    border-color: var(--gold);
+    border-width: 5px;
+    background: var(--white);
+    box-shadow: 0 0 0 1px var(--gold);
+}
+
+.radio-item:has(input:checked) {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.06);
+}
+
+.radio-text {
+    font-size: 0.88rem;
+    color: var(--gray-600);
+    line-height: 1.4;
+    transition: color var(--transition);
+}
+
+.radio-item input:checked ~ .radio-text {
+    color: var(--navy);
+    font-weight: 500;
+}
+
+.radio-item.wide {
+    grid-column: 1 / -1;
+}
+
+
+/* ── CONDITIONAL REVEAL ── */
+.reveal-wrap {
+    display: none;
+    margin-top: 12px;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.reveal-wrap.visible {
+    display: flex;
+    animation: pageFadeIn 0.22s ease forwards;
+}
+
+.reveal-wrap input {
+    height: 44px;
+    padding: 0 14px;
+    border: 1.5px solid var(--gold);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--gray-800);
+    background: rgba(201,168,76,0.03);
+    outline: none;
+    transition: box-shadow var(--transition);
+}
+
+.reveal-wrap input:focus {
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.18);
+}
+
+.reveal-wrap input.has-error {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.10);
+}
+
+
+/* ── FOOTER ACTIONS (back + submit row) ── */
+.footer-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.back-page-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 13px 22px;
+    background: var(--white);
+    border: 1.5px solid var(--gray-200);
+    color: var(--gray-600);
+    font-size: 0.88rem;
+    font-weight: 600;
+    font-family: inherit;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.back-page-btn:hover {
+    border-color: var(--navy);
+    color: var(--navy);
+}
+
+
+/* ── RESPONSIVE ── */
+@media (max-width: 620px) {
+    .radio-group { grid-template-columns: 1fr; }
+    .footer-actions { flex-direction: column-reverse; width: 100%; }
+    .back-page-btn  { width: 100%; justify-content: center; }
+    .submit-btn     { width: 100%; justify-content: center; }
+}

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyst Class of 2026 Registration — Gold Coast Search Partners</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="registration.css">
+    <link rel="stylesheet" href="registration-2026.css">
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <div class="header-brand">
+            <div class="brand-mark">GC</div>
+            <div class="brand-text">
+                <h1 class="company-name">Gold Coast Search Partners</h1>
+                <span class="form-subtitle">Website Resume Drop</span>
+            </div>
+        </div>
+        <a href="index.html" class="back-link">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back
+        </a>
+    </div>
+</header>
+
+<main class="page-content">
+    <div class="form-wrapper">
+
+        <!-- Step tracker -->
+        <div class="step-track">
+            <div class="step done">
+                <span class="step-dot">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                        <path d="M2.5 6l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                <span class="step-label">Resume Drop</span>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step active">
+                <span class="step-dot">2</span>
+                <span class="step-label">Registration</span>
+            </div>
+        </div>
+
+        <!-- Completion bar -->
+        <div class="completion-bar">
+            <div class="completion-fill" id="completion-fill"></div>
+        </div>
+
+        <!-- Title block -->
+        <div class="reg-title-block">
+            <p class="reg-eyebrow">Step 2 of 2</p>
+            <h2 class="reg-title">Analyst Class of <span id="class-year">2026</span> Registration</h2>
+            <div class="page-indicator">
+                <span class="page-pip active" id="pip-1"></span>
+                <span class="page-pip" id="pip-2"></span>
+            </div>
+            <p class="reg-subtitle" id="page-subtitle">Page 1 — Complete all fields to continue.</p>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════════════════ PAGE 1 -->
+        <div id="page-1" class="form-page">
+
+            <!-- 01 CONTACT INFORMATION -->
+            <section class="form-section" id="s-contact">
+                <div class="section-label">
+                    <span class="section-num">01</span>
+                    <h2 class="section-title">Contact Information</h2>
+                </div>
+                <div class="fields-grid two-col">
+                    <div class="field-wrap">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" placeholder="First name" autocomplete="given-name" required>
+                        <span class="err-msg"></span>
+                    </div>
+                    <div class="field-wrap">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" placeholder="Last name" autocomplete="family-name" required>
+                        <span class="err-msg"></span>
+                    </div>
+                    <div class="field-wrap">
+                        <label for="regEmail">Personal Email Address</label>
+                        <input type="email" id="regEmail" name="regEmail" placeholder="you@example.com" autocomplete="email" required>
+                        <span class="err-msg"></span>
+                    </div>
+                    <div class="field-wrap">
+                        <label for="regPhone">Mobile Phone Number</label>
+                        <input type="tel" id="regPhone" name="regPhone" placeholder="(555) 000-0000" autocomplete="tel" required>
+                        <span class="err-msg"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 02 FULL TIME PLACEMENT -->
+            <section class="form-section" id="s-placement">
+                <div class="section-label">
+                    <span class="section-num">02</span>
+                    <h2 class="section-title">Full Time Placement</h2>
+                </div>
+                <div class="fields-grid two-col">
+
+                    <!-- Bank / Firm dropdown -->
+                    <!-- TODO: Replace option list below with values from "Firm Drop Down Choices" images I–IV -->
+                    <div class="field-wrap">
+                        <label for="firmName">Full Time Bank / Firm</label>
+                        <div class="select-wrap">
+                            <select id="firmName" name="firmName" required>
+                                <option value="" disabled selected>Select firm…</option>
+                                <optgroup label="Bulge Bracket">
+                                    <option>Bank of America Securities</option>
+                                    <option>Barclays</option>
+                                    <option>BNP Paribas</option>
+                                    <option>Citigroup</option>
+                                    <option>Deutsche Bank</option>
+                                    <option>Goldman Sachs</option>
+                                    <option>HSBC</option>
+                                    <option>J.P. Morgan</option>
+                                    <option>Morgan Stanley</option>
+                                    <option>UBS</option>
+                                    <option>Wells Fargo Securities</option>
+                                </optgroup>
+                                <optgroup label="Elite Boutique">
+                                    <option>Centerview Partners</option>
+                                    <option>Ducera Partners</option>
+                                    <option>Evercore</option>
+                                    <option>Lazard</option>
+                                    <option>LionTree Advisors</option>
+                                    <option>Moelis &amp; Company</option>
+                                    <option>Perella Weinberg Partners</option>
+                                    <option>PJT Partners</option>
+                                    <option>Qatalyst Partners</option>
+                                    <option>Rothschild &amp; Co.</option>
+                                </optgroup>
+                                <optgroup label="Middle Market &amp; Regional">
+                                    <option>Baird</option>
+                                    <option>BMO Capital Markets</option>
+                                    <option>Canaccord Genuity</option>
+                                    <option>Citizens Capital Markets</option>
+                                    <option>Cowen</option>
+                                    <option>D.A. Davidson</option>
+                                    <option>Fifth Third Securities</option>
+                                    <option>Greenhill &amp; Co.</option>
+                                    <option>Guggenheim Partners</option>
+                                    <option>Harris Williams</option>
+                                    <option>Houlihan Lokey</option>
+                                    <option>Imperial Capital</option>
+                                    <option>Jefferies</option>
+                                    <option>KeyBanc Capital Markets</option>
+                                    <option>Lincoln International</option>
+                                    <option>Mizuho</option>
+                                    <option>Needham &amp; Company</option>
+                                    <option>Nomura</option>
+                                    <option>Oppenheimer &amp; Co.</option>
+                                    <option>Piper Sandler</option>
+                                    <option>Raymond James</option>
+                                    <option>RBC Capital Markets</option>
+                                    <option>Santander</option>
+                                    <option>Scotiabank</option>
+                                    <option>Solomon Partners</option>
+                                    <option>Stephens Inc.</option>
+                                    <option>Stifel</option>
+                                    <option>TD Securities</option>
+                                    <option>Truist Securities</option>
+                                    <option>William Blair</option>
+                                </optgroup>
+                                <optgroup label="Other">
+                                    <option>Other (not listed)</option>
+                                </optgroup>
+                            </select>
+                            <span class="select-arrow" aria-hidden="true">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                    <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <span class="err-msg" id="firmName-err"></span>
+                    </div>
+
+                    <!-- Vertical / Group -->
+                    <div class="field-wrap">
+                        <label for="vertical2026">Vertical / Group</label>
+                        <input type="text" id="vertical2026" name="vertical2026"
+                            placeholder="Group placement — type TBD if not yet assigned" required>
+                        <span class="field-hint">If you have not received your group placement, please put "TBD".</span>
+                        <span class="err-msg"></span>
+                    </div>
+
+                    <!-- Full Time Office Location -->
+                    <!-- TODO: Replace option list below with values from "Full Time Office Location Dropdown" image -->
+                    <div class="field-wrap">
+                        <label for="officeLocation">Full Time Office Location</label>
+                        <div class="select-wrap">
+                            <select id="officeLocation" name="officeLocation" required>
+                                <option value="" disabled selected>Select office location…</option>
+                                <optgroup label="United States">
+                                    <option>Atlanta, GA</option>
+                                    <option>Austin, TX</option>
+                                    <option>Boston, MA</option>
+                                    <option>Charlotte, NC</option>
+                                    <option>Chicago, IL</option>
+                                    <option>Dallas, TX</option>
+                                    <option>Denver, CO</option>
+                                    <option>Houston, TX</option>
+                                    <option>Los Angeles, CA</option>
+                                    <option>Miami, FL</option>
+                                    <option>Minneapolis, MN</option>
+                                    <option>Nashville, TN</option>
+                                    <option>New York, NY</option>
+                                    <option>Philadelphia, PA</option>
+                                    <option>San Francisco, CA</option>
+                                    <option>Seattle, WA</option>
+                                    <option>Washington, D.C.</option>
+                                </optgroup>
+                                <optgroup label="International">
+                                    <option>Dubai, UAE</option>
+                                    <option>Frankfurt, Germany</option>
+                                    <option>Hong Kong</option>
+                                    <option>London, UK</option>
+                                    <option>Paris, France</option>
+                                    <option>Singapore</option>
+                                    <option>Sydney, Australia</option>
+                                    <option>Tokyo, Japan</option>
+                                    <option>Toronto, Canada</option>
+                                    <option>Zurich, Switzerland</option>
+                                </optgroup>
+                                <optgroup label="Other">
+                                    <option>Other (not listed)</option>
+                                </optgroup>
+                            </select>
+                            <span class="select-arrow" aria-hidden="true">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                    <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <span class="err-msg" id="officeLocation-err"></span>
+                    </div>
+
+                    <!-- Start Date -->
+                    <div class="field-wrap">
+                        <label for="startDate">Analyst Program Start Date</label>
+                        <input type="date" id="startDate" name="startDate" required>
+                        <span class="err-msg"></span>
+                    </div>
+
+                    <!-- Position -->
+                    <div class="field-wrap">
+                        <label for="position">Position at Start Date</label>
+                        <div class="select-wrap">
+                            <select id="position" name="position" required>
+                                <option value="" disabled selected>Select position…</option>
+                                <option>Analyst</option>
+                                <option>Associate</option>
+                                <option>Intern</option>
+                            </select>
+                            <span class="select-arrow" aria-hidden="true">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                    <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <span class="err-msg" id="position-err"></span>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- 03 INTERNSHIP BACKGROUND -->
+            <section class="form-section" id="s-internship">
+                <div class="section-label">
+                    <span class="section-num">03</span>
+                    <h2 class="section-title">Internship Background</h2>
+                </div>
+
+                <!-- Q: Summer intern -->
+                <div class="question-block" id="qb-summer">
+                    <p class="question-text">Were you a summer intern at your current bank / firm?
+                        <em>If no, please list the firm you completed your internship with below.</em>
+                    </p>
+                    <div class="radio-group" id="rg-summer">
+                        <label class="radio-item">
+                            <input type="radio" name="summerIntern" value="Yes" required>
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">Yes</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="summerIntern" value="N/A">
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">N/A</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="summerIntern" value="No">
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">No</span>
+                        </label>
+                    </div>
+                    <div class="reveal-wrap" id="summer-reveal">
+                        <input type="text" id="summerFirm" placeholder="Firm where you completed your internship…">
+                        <span class="err-msg" id="summerFirm-err"></span>
+                    </div>
+                    <span class="err-msg section-err" id="summerIntern-err"></span>
+                </div>
+
+                <!-- Q: PE / GE / VC / credit / HF internship -->
+                <div class="question-block" id="qb-investing">
+                    <p class="question-text">Have you had a private equity, growth equity, venture capital, credit, or hedge fund investing internship?
+                        <em>If yes, please list the firm below.</em>
+                    </p>
+                    <div class="radio-group" id="rg-investing">
+                        <label class="radio-item">
+                            <input type="radio" name="investingIntern" value="No" required>
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">No</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="investingIntern" value="Yes">
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">Yes</span>
+                        </label>
+                    </div>
+                    <div class="reveal-wrap" id="investing-reveal">
+                        <input type="text" id="investingFirm" placeholder="Firm name…">
+                        <span class="err-msg" id="investingFirm-err"></span>
+                    </div>
+                    <span class="err-msg section-err" id="investingIntern-err"></span>
+                </div>
+
+            </section>
+
+            <!-- 04 INDUSTRY EXPERIENCE -->
+            <section class="form-section" id="s-renewables">
+                <div class="section-label">
+                    <span class="section-num">04</span>
+                    <h2 class="section-title">Industry Experience</h2>
+                </div>
+
+                <div class="question-block">
+                    <p class="question-text">Renewables Experience — Please select the option that best applies to you.</p>
+                    <div class="radio-group stacked" id="rg-renewables">
+                        <label class="radio-item wide">
+                            <input type="radio" name="renewables" value="I have renewables experience from my summer internship" required>
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">I have renewables experience from my summer internship</span>
+                        </label>
+                        <label class="radio-item wide">
+                            <input type="radio" name="renewables" value="I do not have renewables experience, but I will have renewables experience by the completion of my analyst program">
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">I do not have renewables experience, but I will have renewables experience by the completion of my analyst program</span>
+                        </label>
+                        <label class="radio-item wide">
+                            <input type="radio" name="renewables" value="N/A">
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">N/A</span>
+                        </label>
+                    </div>
+                    <span class="err-msg section-err" id="renewables-err"></span>
+                </div>
+
+            </section>
+
+            <!-- PAGE 1 FOOTER — NEXT -->
+            <div class="form-footer">
+                <p class="required-note">Complete all sections on this page to continue.</p>
+                <button type="button" class="submit-btn" id="next-btn">
+                    <span>Continue to Page 2</span>
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                        <path d="M3 9h12M15 9l-4.5-4.5M15 9l-4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+
+        </div>
+        <!-- END PAGE 1 -->
+
+        <!-- ═══════════════════════════════════════════════════════════ PAGE 2 -->
+        <div id="page-2" class="form-page">
+
+            <!-- Additional questions will be added here -->
+            <section class="form-section coming-soon-section">
+                <div class="coming-soon-inner">
+                    <div class="coming-soon-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                            <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M16 10v6l4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <p class="coming-soon-text">More questions are on their way.</p>
+                    <p class="coming-soon-sub">Submit below to complete your registration — this page will be populated shortly.</p>
+                </div>
+            </section>
+
+            <!-- PAGE 2 FOOTER — SUBMIT -->
+            <div class="form-footer">
+                <p class="required-note">Complete all sections, then submit your registration.</p>
+                <div class="footer-actions">
+                    <button type="button" class="back-page-btn" id="back-btn">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                            <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Back
+                    </button>
+                    <button type="button" class="submit-btn" id="submit-btn">
+                        <span>Submit Registration</span>
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                            <path d="M3 9h12M15 9l-4.5-4.5M15 9l-4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        <!-- END PAGE 2 -->
+
+        <!-- SUCCESS STATE -->
+        <div class="success-state" id="success-state">
+            <div class="success-icon">
+                <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+                    <circle cx="32" cy="32" r="32" fill="rgba(201,168,76,0.12)"/>
+                    <circle cx="32" cy="32" r="24" fill="rgba(201,168,76,0.08)"/>
+                    <path d="M20 32l9 9 15-16" stroke="#C9A84C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <p class="success-eyebrow">All done</p>
+            <h2>Registration Complete</h2>
+            <p class="success-class">Analyst Class of <strong>2026</strong></p>
+            <p>Your profile has been submitted. The Gold Coast Search Partners team will review your information and be in touch shortly.</p>
+        </div>
+
+    </div>
+</main>
+
+<script src="registration-2026.js"></script>
+</body>
+</html>
