@@ -255,6 +255,51 @@ body {
 }
 
 
+/* ── SELECT / DROPDOWN (shared) ── */
+.select-wrap {
+    position: relative;
+}
+
+.select-wrap select {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    height: 44px;
+    padding: 0 40px 0 14px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--gray-800);
+    background: var(--white);
+    cursor: pointer;
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.select-wrap select:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+}
+
+.select-wrap select.has-error {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.10);
+}
+
+.select-wrap select option[value=""] { color: var(--gray-400); }
+.select-wrap select option:not([value=""]) { color: var(--gray-800); }
+
+.select-arrow {
+    position: absolute;
+    right: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--gray-400);
+}
+
+
 /* ── CHECKBOX GRID ── */
 .checkbox-grid {
     display: grid;

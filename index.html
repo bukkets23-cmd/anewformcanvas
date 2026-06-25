@@ -60,8 +60,52 @@
                     </div>
                     <div class="field-wrap">
                         <label for="location">Full Time Location</label>
-                        <input type="text" id="location" name="location" placeholder="City, State">
-                        <span class="err-msg"></span>
+                        <!-- TODO: Replace options below with values from "Website Resume Drop Dropdown Location" image in the Helpful folder -->
+                        <div class="select-wrap">
+                            <select id="location" name="location">
+                                <option value="" disabled selected>Select location…</option>
+                                <optgroup label="United States">
+                                    <option>Atlanta, GA</option>
+                                    <option>Austin, TX</option>
+                                    <option>Boston, MA</option>
+                                    <option>Charlotte, NC</option>
+                                    <option>Chicago, IL</option>
+                                    <option>Dallas, TX</option>
+                                    <option>Denver, CO</option>
+                                    <option>Houston, TX</option>
+                                    <option>Los Angeles, CA</option>
+                                    <option>Miami, FL</option>
+                                    <option>Minneapolis, MN</option>
+                                    <option>Nashville, TN</option>
+                                    <option>New York, NY</option>
+                                    <option>Philadelphia, PA</option>
+                                    <option>San Francisco, CA</option>
+                                    <option>Seattle, WA</option>
+                                    <option>Washington, D.C.</option>
+                                </optgroup>
+                                <optgroup label="International">
+                                    <option>Dubai, UAE</option>
+                                    <option>Frankfurt, Germany</option>
+                                    <option>Hong Kong</option>
+                                    <option>London, UK</option>
+                                    <option>Paris, France</option>
+                                    <option>Singapore</option>
+                                    <option>Sydney, Australia</option>
+                                    <option>Tokyo, Japan</option>
+                                    <option>Toronto, Canada</option>
+                                    <option>Zurich, Switzerland</option>
+                                </optgroup>
+                                <optgroup label="Other">
+                                    <option>Other (not listed)</option>
+                                </optgroup>
+                            </select>
+                            <span class="select-arrow" aria-hidden="true">
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                    <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </div>
+                        <span class="err-msg" id="location-err"></span>
                     </div>
                     <div class="field-wrap">
                         <label for="undergradYear">Undergrad Year</label>

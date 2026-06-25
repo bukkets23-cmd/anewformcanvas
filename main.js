@@ -7,10 +7,13 @@ const TOTAL = 11; // 7 text fields + gender + ethnicity + citizenship + resume
 function countFilled() {
     let n = 0;
 
-    const textIds = ['fullName', 'currentCompany', 'vertical', 'location', 'undergradYear', 'email', 'phone'];
+    const textIds = ['fullName', 'currentCompany', 'vertical', 'undergradYear', 'email', 'phone'];
     textIds.forEach(id => {
         if (document.getElementById(id)?.value.trim()) n++;
     });
+
+    // Location is now a select
+    if (document.getElementById('location')?.value) n++;
 
     const genderChecked = document.querySelectorAll('input[name="gender"]:checked');
     let genderOk = genderChecked.length > 0;
@@ -117,6 +120,13 @@ fileInput?.addEventListener('change', () => {
 
 // ── LIVE ERROR CLEARING ───────────────────────────────────────────────────────
 
+document.getElementById('location')?.addEventListener('change', function () {
+    this.classList.remove('has-error');
+    document.getElementById('location-err').textContent = '';
+    this.closest('.form-section')?.classList.remove('has-error');
+    updateProgress();
+});
+
 document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="number"]').forEach(input => {
     input.addEventListener('input', function () {
         this.classList.remove('has-error');
@@ -158,12 +168,20 @@ function validate() {
     clearAllErrors();
     let ok = true;
 
+    // --- Location dropdown ---
+    const locationEl = document.getElementById('location');
+    if (!locationEl.value) {
+        locationEl.classList.add('has-error');
+        document.getElementById('location-err').textContent = 'Please select a location.';
+        locationEl.closest('.form-section')?.classList.add('has-error');
+        ok = false;
+    }
+
     // --- Text fields ---
     const textFields = [
         { id: 'fullName',       label: 'Full name'       },
         { id: 'currentCompany', label: 'Current company' },
         { id: 'vertical',       label: 'Vertical / Group'},
-        { id: 'location',       label: 'Location'        },
         { id: 'undergradYear',  label: 'Undergrad year'  },
         { id: 'email',          label: 'Email'           },
         { id: 'phone',          label: 'Phone number'    },
