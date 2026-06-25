@@ -520,6 +520,16 @@ body {
     flex-shrink: 0;
 }
 
+.file-chosen.needs-reselect {
+    background: rgba(234,179,8,0.08);
+    border-color: rgba(234,179,8,0.35);
+    color: #92400E;
+}
+
+.file-chosen.needs-reselect::before {
+    content: '⚠️';
+}
+
 
 /* ── FORM FOOTER ── */
 .form-footer {

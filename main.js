@@ -1,6 +1,101 @@
 'use strict';
 
 const TOTAL = 11; // 7 text fields + gender + ethnicity + citizenship + resume
+const STORAGE_KEY = 'gcsp_form1';
+
+
+// ── SESSION SAVE / RESTORE ────────────────────────────────────────────────────
+
+function saveFormData() {
+    try {
+        const data = {
+            fullName:       document.getElementById('fullName').value,
+            currentCompany: document.getElementById('currentCompany').value,
+            vertical:       document.getElementById('vertical').value,
+            location:       document.getElementById('location').value,
+            undergradYear:  document.getElementById('undergradYear').value,
+            email:          document.getElementById('email').value,
+            phone:          document.getElementById('phone').value,
+            gender:         [...document.querySelectorAll('input[name="gender"]:checked')].map(cb => cb.value),
+            genderCustom:   document.getElementById('genderCustom').value,
+            ethnicity:      [...document.querySelectorAll('input[name="ethnicity"]:checked')].map(cb => cb.value),
+            citizenship:    [...document.querySelectorAll('input[name="citizenship"]:checked')].map(cb => cb.value),
+            resumeFileName: document.getElementById('resumeFile').files[0]?.name || '',
+        };
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (e) { /* sessionStorage unavailable (private mode, etc.) — silently skip */ }
+}
+
+function restoreFormData() {
+    let data;
+    try {
+        const raw = sessionStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        data = JSON.parse(raw);
+    } catch (e) { return; }
+
+    // Text inputs
+    ['fullName', 'currentCompany', 'vertical', 'undergradYear', 'email', 'phone'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && data[id]) el.value = data[id];
+    });
+
+    // Location select
+    const locationEl = document.getElementById('location');
+    if (locationEl && data.location) locationEl.value = data.location;
+
+    // Gender checkboxes
+    if (data.gender?.length) {
+        data.gender.forEach(val => {
+            const cb = [...document.querySelectorAll('input[name="gender"]')].find(c => c.value === val);
+            if (cb) cb.checked = true;
+        });
+        if (data.gender.includes('Let me type')) {
+            document.getElementById('gender-custom-wrap').classList.add('visible');
+        }
+    }
+    if (data.genderCustom) {
+        const el = document.getElementById('genderCustom');
+        if (el) el.value = data.genderCustom;
+    }
+
+    // Ethnicity checkboxes
+    data.ethnicity?.forEach(val => {
+        const cb = [...document.querySelectorAll('input[name="ethnicity"]')].find(c => c.value === val);
+        if (cb) cb.checked = true;
+    });
+
+    // Citizenship checkboxes
+    data.citizenship?.forEach(val => {
+        const cb = [...document.querySelectorAll('input[name="citizenship"]')].find(c => c.value === val);
+        if (cb) cb.checked = true;
+    });
+
+    // Resume — file objects can't be restored by browsers (security restriction),
+    // but show the filename so the user knows exactly which file to re-select.
+    if (data.resumeFileName) {
+        const fileChosen = document.getElementById('file-chosen');
+        if (fileChosen) {
+            fileChosen.textContent = `${data.resumeFileName} — please re-select this file`;
+            fileChosen.classList.add('visible', 'needs-reselect');
+        }
+    }
+
+    updateProgress();
+}
+
+// Auto-save on every interaction (debounced so it doesn't fire on every keystroke)
+let _saveTimer;
+function debouncedSave() {
+    clearTimeout(_saveTimer);
+    _saveTimer = setTimeout(saveFormData, 400);
+}
+
+document.querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('change', debouncedSave);
+    el.addEventListener('input',  debouncedSave);
+});
+
 
 // ── PROGRESS ──────────────────────────────────────────────────────────────────
 
@@ -12,7 +107,7 @@ function countFilled() {
         if (document.getElementById(id)?.value.trim()) n++;
     });
 
-    // Location is now a select
+    // Location is a select
     if (document.getElementById('location')?.value) n++;
 
     const genderChecked = document.querySelectorAll('input[name="gender"]:checked');
@@ -79,6 +174,7 @@ const chooseBtn  = document.getElementById('choose-file-btn');
 function showFileName(name) {
     fileChosen.textContent = name;
     fileChosen.classList.add('visible');
+    fileChosen.classList.remove('needs-reselect');
 }
 
 chooseBtn?.addEventListener('click', (e) => {
@@ -263,7 +359,9 @@ document.getElementById('resume-form')?.addEventListener('submit', function (e) 
         return;
     }
 
-    // Brief "submitting" state before navigating to registration form
+    // Save final state before navigating away
+    saveFormData();
+
     const btn = document.getElementById('submit-btn');
     btn.disabled = true;
     btn.querySelector('span').textContent = 'Continuing…';
@@ -283,5 +381,7 @@ document.getElementById('resume-form')?.addEventListener('submit', function (e) 
     }, 450);
 });
 
-// Init progress on load
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+restoreFormData();
 updateProgress();
