@@ -245,10 +245,15 @@ document.getElementById('resume-form')?.addEventListener('submit', function (e) 
         return;
     }
 
-    this.style.display = 'none';
-    const success = document.getElementById('success-state');
-    success.classList.add('visible');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Brief "submitting" state before navigating to registration form
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.querySelector('span').textContent = 'Continuing…';
+
+    const year = document.getElementById('undergradYear').value.trim();
+    setTimeout(() => {
+        window.location.href = `registration.html?year=${encodeURIComponent(year)}`;
+    }, 450);
 });
 
 // Init progress on load

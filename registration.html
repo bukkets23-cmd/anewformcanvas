@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyst Registration — Gold Coast Search Partners</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="registration.css">
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <div class="header-brand">
+            <div class="brand-mark">GC</div>
+            <div class="brand-text">
+                <h1 class="company-name">Gold Coast Search Partners</h1>
+                <span class="form-subtitle">Website Resume Drop</span>
+            </div>
+        </div>
+        <a href="index.html" class="back-link">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Back
+        </a>
+    </div>
+</header>
+
+<main class="page-content">
+    <div class="form-wrapper">
+
+        <!-- Step indicator -->
+        <div class="step-track">
+            <div class="step done">
+                <span class="step-dot">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                        <path d="M2.5 6l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                <span class="step-label">Resume Drop</span>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step active">
+                <span class="step-dot">2</span>
+                <span class="step-label">Registration</span>
+            </div>
+        </div>
+
+        <!-- Completion bar -->
+        <div class="completion-bar">
+            <div class="completion-fill" id="completion-fill"></div>
+        </div>
+
+        <!-- Form title block -->
+        <div class="reg-title-block">
+            <p class="reg-eyebrow">Step 2 of 2</p>
+            <h2 class="reg-title">Analyst Class of <span id="class-year">——</span> Registration</h2>
+            <p class="reg-subtitle">A few more details to complete your profile.</p>
+        </div>
+
+        <form id="reg-form" novalidate>
+
+            <!-- Questions will be added here by section -->
+            <!-- ── PLACEHOLDER: remove this block when real questions are added ── -->
+            <section class="form-section coming-soon-section" id="section-placeholder">
+                <div class="coming-soon-inner">
+                    <div class="coming-soon-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                            <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M16 10v6l4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <p class="coming-soon-text">Additional registration questions are on their way.</p>
+                    <p class="coming-soon-sub">Submit below to complete your registration for now — questions will be added shortly.</p>
+                </div>
+            </section>
+            <!-- ── END PLACEHOLDER ── -->
+
+            <!-- SUBMIT -->
+            <div class="form-footer">
+                <p class="required-note">Complete all sections, then submit your registration.</p>
+                <button type="submit" class="submit-btn" id="submit-btn">
+                    <span>Submit Registration</span>
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                        <path d="M3 9h12M15 9l-4.5-4.5M15 9l-4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+
+        </form>
+
+        <!-- SUCCESS STATE -->
+        <div class="success-state" id="success-state">
+            <div class="success-icon">
+                <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+                    <circle cx="32" cy="32" r="32" fill="rgba(201,168,76,0.12)"/>
+                    <circle cx="32" cy="32" r="24" fill="rgba(201,168,76,0.08)"/>
+                    <path d="M20 32l9 9 15-16" stroke="#C9A84C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <p class="success-eyebrow">All done</p>
+            <h2>Registration Complete</h2>
+            <p class="success-class">Analyst Class of <strong id="success-year">——</strong></p>
+            <p>Your profile has been submitted. The Gold Coast Search Partners team will review your information and be in touch shortly.</p>
+        </div>
+
+    </div>
+</main>
+
+<script src="registration.js"></script>
+</body>
+</html>
