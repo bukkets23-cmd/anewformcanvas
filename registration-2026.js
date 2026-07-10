@@ -1055,9 +1055,188 @@ document.getElementById('next-btn-5')?.addEventListener('click', () => {
 });
 
 
+// ── EXCEL EXPORT (TEST) ───────────────────────────────────────────────────────
+// Temporary local testing mechanism: appends each submission as a row in a
+// local .xlsx file via the File System Access API (Chrome/Edge only). The
+// file handle is remembered in IndexedDB so repeated test submissions keep
+// appending to the SAME file without re-prompting each time. No backend —
+// this is strictly for verifying multi-submission behavior before a real
+// data pipeline is built.
+
+const SUBMISSION_FIELDS = [
+    // Page 1 — Candidate Information / Full Time Placement / Internship / Industry
+    { label: 'First Name', id: 'firstName' },
+    { label: 'Last Name', id: 'lastName' },
+    { label: 'Nickname/Preferred Name', id: 'nickname' },
+    { label: 'Personal Email', id: 'regEmail' },
+    { label: 'School Email', id: 'schoolEmail' },
+    { label: 'Mobile Phone', id: 'regPhone' },
+    { label: 'LinkedIn URL', id: 'linkedinUrl' },
+    { label: 'Full Time Bank/Firm', id: 'firmName', otherId: 'firmNameOther', otherValue: 'Other (not listed)' },
+    { label: 'Vertical/Group', id: 'vertical2026' },
+    { label: 'Full Time Office Location', id: 'officeLocation', otherId: 'officeLocationOther', otherValue: 'Other (not listed)' },
+    { label: 'Analyst Program Start Date', id: 'startDate' },
+    { label: 'Position at Start Date', id: 'position' },
+    { label: 'Summer Intern', radioName: 'summerIntern', otherId: 'summerFirm', otherValue: 'No' },
+    { label: 'Investing Internship', radioName: 'investingIntern', otherId: 'investingFirm', otherValue: 'Yes' },
+    { label: 'Renewables Experience', radioName: 'renewables' },
+    // Page 2 — Education / Test Scores
+    { label: 'Degree(s)', checkboxName: 'degree' },
+    { label: 'Undergrad Year', id: 'undergradYear' },
+    { label: 'Expected Graduation Term', radioName: 'gradTerm', otherId: 'gradTermOther', otherValue: 'Other' },
+    { label: 'Masters Grad Year', id: 'mastersGradYear' },
+    { label: 'Undergraduate Institution', id: 'undergradInstitution', otherId: 'undergradInstitutionOther', otherValue: 'Other' },
+    { label: 'GPA', id: 'gpa' },
+    { label: 'Investing Club', radioName: 'investingClub', otherId: 'investingClubOrg', otherValue: 'Yes' },
+    { label: 'Varsity Athletics', checkboxName: 'athletics' },
+    { label: 'SAT Math', id: 'satMath' },
+    { label: 'SAT Verbal', id: 'satVerbal' },
+    { label: 'ACT', id: 'actScore' },
+    { label: 'GMAT', id: 'gmat' },
+    // Page 3 — Background
+    { label: 'Ethnicity', checkboxName: 'ethnicityBg' },
+    { label: 'Languages', checkboxName: 'languages' },
+    { label: 'Citizenship/Visa', checkboxName: 'citizenshipVisa', otherId: 'citizenshipVisaOther', otherValue: 'Visa: Other' },
+    { label: 'Gender Identity', checkboxName: 'gender', otherId: 'genderCustom', otherValue: 'Let me type' },
+    { label: 'LGBTQ Community', radioName: 'lgbtq' },
+    { label: 'Hometown State', id: 'hometownState' },
+    { label: 'Hometown Metro/Regional Area', id: 'hometownMetro' },
+    { label: 'Hometown City', id: 'hometownCity' },
+    { label: 'Military Experience', checkboxName: 'militaryExperience' },
+    // Page 4 — Search Interests
+    { label: 'Search Interests', checkboxName: 'searchInterests' },
+    { label: 'Geographic Interests', checkboxName: 'geoInterests' },
+    { label: 'Top Geographic Preference', id: 'geoPref1' },
+    { label: 'Second Geographic Preference', id: 'geoPref2' },
+    { label: 'Third Geographic Preference', id: 'geoPref3' },
+    { label: 'Vertical Interests', checkboxName: 'verticalInterests' },
+    { label: 'Buyside Conversations', id: 'buysideDetails' },
+    // Page 5 — no header
+    { label: 'Start Date Preference', checkboxName: 'startDatePref' },
+    { label: 'Summer 2028 On Cycle Interest', radioName: 'onCycle2028' },
+    { label: 'Megafund Interests', checkboxName: 'megafundInterests' },
+    { label: 'Middle Market/Growth Interests', checkboxName: 'middleMarketInterests' },
+    { label: 'Impact Investing Interests', checkboxName: 'impactInvestingInterests' },
+    // Page 6 — Additional Info
+    { label: 'Other Incoming Analysts', id: 'otherAnalysts' },
+    { label: 'Bank Group Staffer', id: 'bankStaffer' },
+    { label: 'Final Question', id: 'finalQuestion' },
+];
+
+function collectSubmissionRow() {
+    const row = {
+        'Submitted At': new Date().toISOString(),
+        'Class Year': classYear,
+    };
+
+    SUBMISSION_FIELDS.forEach(f => {
+        let val = '';
+        if (f.id) {
+            val = document.getElementById(f.id)?.value.trim() || '';
+        } else if (f.radioName) {
+            val = document.querySelector(`input[name="${f.radioName}"]:checked`)?.value || '';
+        } else if (f.checkboxName) {
+            val = [...document.querySelectorAll(`input[name="${f.checkboxName}"]:checked`)].map(cb => cb.value).join('; ');
+        }
+        if (f.otherId && val === f.otherValue) {
+            const otherVal = document.getElementById(f.otherId)?.value.trim();
+            if (otherVal) val = `${val}: ${otherVal}`;
+        }
+        row[f.label] = val;
+    });
+
+    row['Resume Filename'] = resumeInput?.files[0]?.name || getForm1ResumeFileName() || '';
+
+    return row;
+}
+
+const IDB_NAME = 'gcsp_registration_db';
+const IDB_STORE = 'handles';
+const IDB_KEY = 'excelFileHandle';
+const EXCEL_TEST_FILENAME = 'GCSP_Registration_TEST_records.xlsx';
+
+function idbOpen() {
+    return new Promise((resolve, reject) => {
+        const req = indexedDB.open(IDB_NAME, 1);
+        req.onupgradeneeded = () => req.result.createObjectStore(IDB_STORE);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+    });
+}
+
+async function idbGetHandle() {
+    const db = await idbOpen();
+    return new Promise((resolve, reject) => {
+        const req = db.transaction(IDB_STORE, 'readonly').objectStore(IDB_STORE).get(IDB_KEY);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => reject(req.error);
+    });
+}
+
+async function idbSetHandle(handle) {
+    const db = await idbOpen();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(IDB_STORE, 'readwrite');
+        tx.objectStore(IDB_STORE).put(handle, IDB_KEY);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+    });
+}
+
+async function getExcelFileHandle() {
+    let handle = await idbGetHandle().catch(() => null);
+
+    if (handle) {
+        const perm = await handle.queryPermission({ mode: 'readwrite' });
+        if (perm === 'granted') return handle;
+        if (perm === 'prompt') {
+            const req = await handle.requestPermission({ mode: 'readwrite' });
+            if (req === 'granted') return handle;
+        }
+        // permission denied/revoked — fall through and ask the user to pick again
+    }
+
+    handle = await window.showSaveFilePicker({
+        suggestedName: EXCEL_TEST_FILENAME,
+        types: [{
+            description: 'Excel Workbook',
+            accept: { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] },
+        }],
+    });
+    await idbSetHandle(handle).catch(() => { /* IndexedDB unavailable — will re-prompt next time */ });
+    return handle;
+}
+
+async function appendRowToExcel(row) {
+    if (!('showSaveFilePicker' in window) || typeof XLSX === 'undefined') return;
+
+    const handle = await getExcelFileHandle();
+    const file = await handle.getFile();
+    const headers = Object.keys(row);
+
+    let workbook;
+    if (file.size > 0) {
+        const buffer = await file.arrayBuffer();
+        workbook = XLSX.read(buffer, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const existingRows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
+        existingRows.push(row);
+        workbook.Sheets[sheetName] = XLSX.utils.json_to_sheet(existingRows, { header: headers });
+    } else {
+        workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet([row], { header: headers }), 'Registrations');
+    }
+
+    const outBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
+    const writable = await handle.createWritable();
+    await writable.write(outBuffer);
+    await writable.close();
+}
+
+
 // ── SUBMIT ────────────────────────────────────────────────────────────────────
 
-document.getElementById('submit-btn')?.addEventListener('click', () => {
+document.getElementById('submit-btn')?.addEventListener('click', async () => {
     if (!validatePage6()) {
         document.querySelector('#page-6 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
@@ -1066,6 +1245,12 @@ document.getElementById('submit-btn')?.addEventListener('click', () => {
     const btn = document.getElementById('submit-btn');
     btn.disabled = true;
     btn.querySelector('span').textContent = 'Submitting…';
+
+    try {
+        await appendRowToExcel(collectSubmissionRow());
+    } catch (e) {
+        console.error('Could not save this submission to the test Excel file:', e);
+    }
 
     setTimeout(() => {
         try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }

@@ -377,10 +377,69 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 
 
+/* ── SUCCESS STATE: CLIENT LIST ── */
+.success-state.client-success {
+    padding: 48px 40px 60px;
+    align-items: stretch;
+    text-align: left;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.success-state.client-success .success-icon,
+.success-state.client-success .success-eyebrow,
+.success-state.client-success h2,
+.success-state.client-success .success-class {
+    text-align: center;
+}
+
+.success-state.client-success h2 {
+    font-size: 1.5rem;
+    max-width: none;
+}
+
+.client-list {
+    margin-top: 20px;
+}
+
+.client-list h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.1rem;
+    color: var(--navy);
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 8px;
+    margin: 28px 0 14px;
+}
+
+.client-list h3:first-child {
+    margin-top: 0;
+}
+
+.client-list ol {
+    margin: 0;
+    padding-left: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.client-list li {
+    font-size: 0.86rem;
+    color: var(--gray-600);
+    line-height: 1.6;
+    max-width: none;
+}
+
+.client-list li strong {
+    color: var(--navy);
+}
+
+
 /* ── RESPONSIVE ── */
 @media (max-width: 620px) {
     .radio-group { grid-template-columns: 1fr; }
     .footer-actions { flex-direction: column-reverse; width: 100%; }
     .back-page-btn  { width: 100%; justify-content: center; }
     .submit-btn     { width: 100%; justify-content: center; }
+    .success-state.client-success { padding: 32px 20px 40px; }
 }
