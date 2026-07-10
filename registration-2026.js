@@ -11,7 +11,7 @@ const STORAGE_KEY = `gcsp_registration_${classYear}`;
 
 // ── PAGE STATE ────────────────────────────────────────────────────────────────
 let currentPage = 1;
-const TOTAL_PAGES = 3;
+const TOTAL_PAGES = 4;
 
 function showPage(n) {
     document.querySelectorAll('.form-page').forEach((el, i) => {
@@ -24,6 +24,7 @@ function showPage(n) {
         1: 'Page 1 — Complete all fields to continue.',
         2: 'Page 2 — Almost there.',
         3: 'Page 3 — Final stretch.',
+        4: 'Page 4 — Last one.',
     };
     document.getElementById('page-subtitle').textContent = subtitles[n] || `Page ${n}`;
     currentPage = n;
@@ -33,6 +34,7 @@ function showPage(n) {
 
 document.getElementById('back-btn-2')?.addEventListener('click', () => showPage(1));
 document.getElementById('back-btn-3')?.addEventListener('click', () => showPage(2));
+document.getElementById('back-btn-4')?.addEventListener('click', () => showPage(3));
 
 
 // ── PHONE FORMATTING ──────────────────────────────────────────────────────────
@@ -58,20 +60,21 @@ function saveFormData() {
             '#page-1 input[type="text"], #page-1 input[type="email"], #page-1 input[type="tel"], ' +
             '#page-1 input[type="date"], #page-1 input[type="url"], #page-1 select, ' +
             '#page-2 input[type="text"], #page-2 select, ' +
-            '#page-3 input[type="text"], #page-3 select'
+            '#page-3 input[type="text"], #page-3 select, ' +
+            '#page-4 input[type="text"], #page-4 select, #page-4 textarea'
         ).forEach(el => {
             if (el.id) data.text[el.id] = el.value;
         });
 
         const radioNames = new Set();
-        document.querySelectorAll('#page-1 input[type="radio"], #page-2 input[type="radio"], #page-3 input[type="radio"]').forEach(el => radioNames.add(el.name));
+        document.querySelectorAll('#page-1 input[type="radio"], #page-2 input[type="radio"], #page-3 input[type="radio"], #page-4 input[type="radio"]').forEach(el => radioNames.add(el.name));
         radioNames.forEach(name => {
             const checked = document.querySelector(`input[name="${name}"]:checked`);
             if (checked) data.radio[name] = checked.value;
         });
 
         const checkboxNames = new Set();
-        document.querySelectorAll('#page-1 input[type="checkbox"], #page-2 input[type="checkbox"], #page-3 input[type="checkbox"]').forEach(el => checkboxNames.add(el.name));
+        document.querySelectorAll('#page-1 input[type="checkbox"], #page-2 input[type="checkbox"], #page-3 input[type="checkbox"], #page-4 input[type="checkbox"]').forEach(el => checkboxNames.add(el.name));
         checkboxNames.forEach(name => {
             data.checkbox[name] = [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(cb => cb.value);
         });
@@ -95,7 +98,7 @@ function restoreFormData() {
     });
 
     // Fire "change" on selects so conditional "Other" reveals show correctly
-    document.querySelectorAll('#page-1 select, #page-2 select, #page-3 select').forEach(el => {
+    document.querySelectorAll('#page-1 select, #page-2 select, #page-3 select, #page-4 select').forEach(el => {
         if (el.value) el.dispatchEvent(new Event('change'));
     });
 
@@ -127,7 +130,7 @@ function debouncedSave() {
     _saveTimer = setTimeout(saveFormData, 400);
 }
 
-document.querySelectorAll('#page-1 input, #page-1 select, #page-2 input, #page-2 select, #page-3 input, #page-3 select').forEach(el => {
+document.querySelectorAll('#page-1 input, #page-1 select, #page-2 input, #page-2 select, #page-3 input, #page-3 select, #page-4 input, #page-4 select, #page-4 textarea').forEach(el => {
     el.addEventListener('change', debouncedSave);
     el.addEventListener('input', debouncedSave);
 });
@@ -309,6 +312,21 @@ document.getElementById('gender-let-me-type')?.addEventListener('change', functi
     }
 });
 
+// Search Interests / Geographic Interests / Vertical Interests checkboxes: clear error on any change
+[
+    { name: 'searchInterests',   errId: 'searchInterests-err'   },
+    { name: 'geoInterests',      errId: 'geoInterests-err'      },
+    { name: 'verticalInterests', errId: 'verticalInterests-err' },
+].forEach(({ name, errId }) => {
+    document.querySelectorAll(`input[name="${name}"]`).forEach(cb => {
+        cb.addEventListener('change', () => {
+            document.getElementById(errId).textContent = '';
+            document.getElementById('s-search-interests')?.classList.remove('has-error');
+            updateProgress();
+        });
+    });
+});
+
 
 // ── PROGRESS ─────────────────────────────────────────────────────────────────
 // Counts required fields on the current page only (progress bar scoped per page)
@@ -368,16 +386,32 @@ function countPage3Filled() {
 
 const PAGE3_TOTAL = 5;
 
+function countPage4Filled() {
+    let n = 0;
+
+    if (document.querySelectorAll('input[name="searchInterests"]:checked').length) n++;
+    if (document.querySelectorAll('input[name="geoInterests"]:checked').length) n++;
+    if (document.getElementById('geoPref1')?.value) n++;
+    if (document.getElementById('geoPref2')?.value) n++;
+    if (document.getElementById('geoPref3')?.value) n++;
+    if (document.querySelectorAll('input[name="verticalInterests"]:checked').length) n++;
+    if (document.getElementById('buysideDetails')?.value.trim()) n++;
+
+    return n;
+}
+
+const PAGE4_TOTAL = 7;
+
 function updateProgress() {
-    const counters = { 1: countPage1Filled, 2: countPage2Filled, 3: countPage3Filled };
-    const totals   = { 1: PAGE1_TOTAL,      2: PAGE2_TOTAL,      3: PAGE3_TOTAL };
+    const counters = { 1: countPage1Filled, 2: countPage2Filled, 3: countPage3Filled, 4: countPage4Filled };
+    const totals   = { 1: PAGE1_TOTAL,      2: PAGE2_TOTAL,      3: PAGE3_TOTAL,      4: PAGE4_TOTAL };
     const filled = (counters[currentPage] || countPage1Filled)();
     const total  = totals[currentPage] || PAGE1_TOTAL;
     const pct = Math.round((filled / total) * 100);
     document.getElementById('completion-fill').style.width = Math.min(pct, 100) + '%';
 }
 
-document.querySelectorAll('#page-1 input, #page-1 select, #page-2 input, #page-2 select, #page-3 input, #page-3 select').forEach(el => {
+document.querySelectorAll('#page-1 input, #page-1 select, #page-2 input, #page-2 select, #page-3 input, #page-3 select, #page-4 input, #page-4 select, #page-4 textarea').forEach(el => {
     el.addEventListener('change', updateProgress);
     el.addEventListener('input', updateProgress);
 });
@@ -407,10 +441,10 @@ function clearInputError(el) {
 }
 
 // Live clear on typing
-document.querySelectorAll('#page-1 input[type="text"], #page-1 input[type="email"], #page-1 input[type="tel"], #page-1 input[type="date"], #page-2 input[type="text"], #page-3 input[type="text"]').forEach(el => {
+document.querySelectorAll('#page-1 input[type="text"], #page-1 input[type="email"], #page-1 input[type="tel"], #page-1 input[type="date"], #page-2 input[type="text"], #page-3 input[type="text"], #page-4 input[type="text"], #page-4 textarea').forEach(el => {
     el.addEventListener('input', () => clearInputError(el));
 });
-document.querySelectorAll('#page-1 select, #page-2 select, #page-3 select').forEach(el => {
+document.querySelectorAll('#page-1 select, #page-2 select, #page-3 select, #page-4 select').forEach(el => {
     el.addEventListener('change', () => {
         el.classList.remove('has-error');
         const errEl = document.getElementById(el.id + '-err');
@@ -712,6 +746,62 @@ function validatePage3() {
     return ok;
 }
 
+function validatePage4() {
+    // Clear all page 4 errors first
+    document.querySelectorAll('#page-4 .err-msg').forEach(el => el.textContent = '');
+    document.querySelectorAll('#page-4 input, #page-4 select, #page-4 textarea').forEach(el => el.classList.remove('has-error', 'is-valid'));
+    document.querySelectorAll('#page-4 .form-section').forEach(el => el.classList.remove('has-error'));
+
+    let ok = true;
+
+    // Search interests — at least one checkbox
+    if (!document.querySelectorAll('input[name="searchInterests"]:checked').length) {
+        document.getElementById('searchInterests-err').textContent = 'Please select at least one option.';
+        document.getElementById('s-search-interests').classList.add('has-error');
+        ok = false;
+    }
+
+    // Geographic interests — at least one checkbox
+    if (!document.querySelectorAll('input[name="geoInterests"]:checked').length) {
+        document.getElementById('geoInterests-err').textContent = 'Please select at least one option.';
+        document.getElementById('s-search-interests').classList.add('has-error');
+        ok = false;
+    }
+
+    // Geographic preference selects
+    [
+        { id: 'geoPref1', label: 'top geographic preference' },
+        { id: 'geoPref2', label: 'second choice geographic preference' },
+        { id: 'geoPref3', label: 'third geographic preference' },
+    ].forEach(({ id, label }) => {
+        const el = document.getElementById(id);
+        if (!el.value) {
+            el.classList.add('has-error');
+            document.getElementById(id + '-err').textContent = 'Please make a selection.';
+            document.getElementById('s-search-interests').classList.add('has-error');
+            ok = false;
+        }
+    });
+
+    // Vertical interests — at least one checkbox
+    if (!document.querySelectorAll('input[name="verticalInterests"]:checked').length) {
+        document.getElementById('verticalInterests-err').textContent = 'Please select at least one option.';
+        document.getElementById('s-search-interests').classList.add('has-error');
+        ok = false;
+    }
+
+    // Buyside conversations
+    const buysideEl = document.getElementById('buysideDetails');
+    if (!buysideEl.value.trim()) {
+        buysideEl.classList.add('has-error');
+        document.getElementById('buysideDetails-err').textContent = 'Please provide details, or enter N/A.';
+        document.getElementById('s-search-interests').classList.add('has-error');
+        ok = false;
+    }
+
+    return ok;
+}
+
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
 
@@ -733,12 +823,21 @@ document.getElementById('next-btn-2')?.addEventListener('click', () => {
     showPage(3);
 });
 
+document.getElementById('next-btn-3')?.addEventListener('click', () => {
+    if (!validatePage3()) {
+        document.querySelector('#page-3 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+    saveFormData();
+    showPage(4);
+});
+
 
 // ── SUBMIT ────────────────────────────────────────────────────────────────────
 
 document.getElementById('submit-btn')?.addEventListener('click', () => {
-    if (!validatePage3()) {
-        document.querySelector('#page-3 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (!validatePage4()) {
+        document.querySelector('#page-4 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
 
@@ -748,7 +847,7 @@ document.getElementById('submit-btn')?.addEventListener('click', () => {
 
     setTimeout(() => {
         try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
-        document.getElementById('page-3').style.display = 'none';
+        document.getElementById('page-4').style.display = 'none';
         document.querySelector('.reg-title-block').style.display = 'none';
         document.querySelector('.step-track').style.display = 'none';
         document.querySelector('.completion-bar').style.display = 'none';

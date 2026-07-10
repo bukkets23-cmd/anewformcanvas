@@ -64,6 +64,7 @@
                 <span class="page-pip active" id="pip-1"></span>
                 <span class="page-pip" id="pip-2"></span>
                 <span class="page-pip" id="pip-3"></span>
+                <span class="page-pip" id="pip-4"></span>
             </div>
             <p class="reg-subtitle" id="page-subtitle">Page 1 — Complete all fields to continue.</p>
             <p class="required-legend">Fields marked with <span class="required-mark">*</span> are required.</p>
@@ -1237,11 +1238,338 @@
 
             </section>
 
-            <!-- PAGE 3 FOOTER — SUBMIT -->
+            <!-- PAGE 3 FOOTER — NEXT -->
+            <div class="form-footer">
+                <p class="required-note">Complete all sections on this page to continue.</p>
+                <div class="footer-actions">
+                    <button type="button" class="back-page-btn" id="back-btn-3">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                            <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Back
+                    </button>
+                    <button type="button" class="submit-btn" id="next-btn-3">
+                        <span>Continue to Page 4</span>
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                            <path d="M3 9h12M15 9l-4.5-4.5M15 9l-4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        <!-- END PAGE 3 -->
+
+        <!-- ═══════════════════════════════════════════════════════════ PAGE 4 -->
+        <div id="page-4" class="form-page">
+
+            <!-- 01 SEARCH INTERESTS -->
+            <section class="form-section" id="s-search-interests">
+                <div class="section-label">
+                    <span class="section-num">01</span>
+                    <h2 class="section-title">Search Interests</h2>
+                </div>
+
+                <!-- Search interests -->
+                <div class="question-block" id="qb-searchInterests">
+                    <p class="question-text">Please select your search interests<span class="required-mark">*</span></p>
+                    <div class="checkbox-grid two-col" id="cg-searchInterests">
+                        <label class="cb-item">
+                            <input type="checkbox" name="searchInterests" value="Private equity">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Private equity</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="searchInterests" value="Growth equity">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Growth equity</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="searchInterests" value="Venture Capital">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Venture Capital</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="searchInterests" value="Impact Investing">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Impact Investing</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="searchInterests" value="Distressed">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Distressed</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="searchInterests" value="Credit">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Credit</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="searchInterests" value="Investor Relations">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Investor Relations</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="searchInterests" value="Hedge Fund">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Hedge Fund</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="searchInterests" value="Technology Company">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Technology Company</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="searchInterests" value="HR/Recruiting">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">HR/Recruiting</span>
+                        </label>
+                    </div>
+                    <span class="err-msg section-err" id="searchInterests-err"></span>
+                </div>
+
+                <!-- Geographic interests -->
+                <div class="question-block" id="qb-geoInterests">
+                    <p class="question-text">Please select geographic interests<span class="required-mark">*</span></p>
+                    <div class="checkbox-grid three-col" id="cg-geoInterests">
+                        <label class="cb-item">
+                            <input type="checkbox" name="geoInterests" value="Flexible">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Flexible</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="geoInterests" value="New York">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">New York</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="geoInterests" value="San Francisco">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">San Francisco</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="geoInterests" value="Miami">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Miami</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="geoInterests" value="Austin">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Austin</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="geoInterests" value="Houston">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Houston</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="geoInterests" value="Los Angeles">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Los Angeles</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="geoInterests" value="Boston">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Boston</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="geoInterests" value="Chicago">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Chicago</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="geoInterests" value="US East Coast">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">US East Coast</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="geoInterests" value="US West Coast">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">US West Coast</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="geoInterests" value="International">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">International</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="geoInterests" value="London">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">London</span>
+                        </label>
+                    </div>
+                    <span class="err-msg section-err" id="geoInterests-err"></span>
+                </div>
+
+                <!-- Top geographic preference -->
+                <div class="question-block" id="qb-geoPref1">
+                    <label for="geoPref1" class="question-text">Please select your top geographic preference<span class="required-mark">*</span></label>
+                    <div class="select-wrap">
+                        <select id="geoPref1" name="geoPref1" required>
+                            <option value="" disabled selected>Select preference…</option>
+                            <option>Flexible</option>
+                            <option>New York</option>
+                            <option>San Francisco</option>
+                            <option>Miami</option>
+                            <option>Austin</option>
+                            <option>Houston</option>
+                            <option>Los Angeles</option>
+                            <option>Boston</option>
+                            <option>Chicago</option>
+                            <option>US East Coast</option>
+                            <option>US West Coast</option>
+                            <option>International</option>
+                            <option>London</option>
+                        </select>
+                        <span class="select-arrow" aria-hidden="true">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <span class="err-msg" id="geoPref1-err"></span>
+                </div>
+
+                <!-- Second choice geographic preference -->
+                <div class="question-block" id="qb-geoPref2">
+                    <label for="geoPref2" class="question-text">Please select your second choice geographic preference<span class="required-mark">*</span></label>
+                    <div class="select-wrap">
+                        <select id="geoPref2" name="geoPref2" required>
+                            <option value="" disabled selected>Select preference…</option>
+                            <option>Flexible</option>
+                            <option>New York</option>
+                            <option>San Francisco</option>
+                            <option>Miami</option>
+                            <option>Austin</option>
+                            <option>Houston</option>
+                            <option>Los Angeles</option>
+                            <option>Boston</option>
+                            <option>Chicago</option>
+                            <option>US East Coast</option>
+                            <option>US West Coast</option>
+                            <option>International</option>
+                            <option>London</option>
+                        </select>
+                        <span class="select-arrow" aria-hidden="true">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <span class="err-msg" id="geoPref2-err"></span>
+                </div>
+
+                <!-- Third geographic preference -->
+                <div class="question-block" id="qb-geoPref3">
+                    <label for="geoPref3" class="question-text">Please select your third geographic preference<span class="required-mark">*</span></label>
+                    <div class="select-wrap">
+                        <select id="geoPref3" name="geoPref3" required>
+                            <option value="" disabled selected>Select preference…</option>
+                            <option>Flexible</option>
+                            <option>New York</option>
+                            <option>San Francisco</option>
+                            <option>Miami</option>
+                            <option>Austin</option>
+                            <option>Houston</option>
+                            <option>Los Angeles</option>
+                            <option>Boston</option>
+                            <option>Chicago</option>
+                            <option>US East Coast</option>
+                            <option>US West Coast</option>
+                            <option>International</option>
+                            <option>London</option>
+                        </select>
+                        <span class="select-arrow" aria-hidden="true">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <span class="err-msg" id="geoPref3-err"></span>
+                </div>
+
+                <!-- Vertical interests -->
+                <div class="question-block" id="qb-verticalInterests">
+                    <p class="question-text">Please select your vertical interests<span class="required-mark">*</span></p>
+                    <div class="checkbox-grid two-col" id="cg-verticalInterests">
+                        <label class="cb-item">
+                            <input type="checkbox" name="verticalInterests" value="Business Services">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Business Services</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="verticalInterests" value="Consumer & Retail">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Consumer &amp; Retail</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="verticalInterests" value="Energy">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Energy</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="verticalInterests" value="Financial Services">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Financial Services</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="verticalInterests" value="Healthcare">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Healthcare</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="verticalInterests" value="Impact Investing">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Impact Investing</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="verticalInterests" value="Industrials">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Industrials</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="verticalInterests" value="Infrastructure/Renewables">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Infrastructure/Renewables</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="verticalInterests" value="Media/TMT">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Media/TMT</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="verticalInterests" value="Software">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Software</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="verticalInterests" value="Sports">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Sports</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="verticalInterests" value="Tech Enabled Services">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Tech Enabled Services</span>
+                        </label>
+                    </div>
+                    <span class="err-msg section-err" id="verticalInterests-err"></span>
+                </div>
+
+                <!-- Buyside conversations -->
+                <div class="question-block" id="qb-buysideDetails">
+                    <label for="buysideDetails" class="question-text">Are you currently speaking with any buyside firms (Coffee chats, networking events, interviews, etc.)? If so, please provide a few details below.<span class="required-mark">*</span></label>
+                    <textarea id="buysideDetails" name="buysideDetails" rows="4" placeholder="Please provide details, or put N/A if not applicable…" required></textarea>
+                    <span class="err-msg" id="buysideDetails-err"></span>
+                </div>
+
+            </section>
+
+            <!-- PAGE 4 FOOTER — SUBMIT -->
             <div class="form-footer">
                 <p class="required-note">Complete all sections, then submit your registration.</p>
                 <div class="footer-actions">
-                    <button type="button" class="back-page-btn" id="back-btn-3">
+                    <button type="button" class="back-page-btn" id="back-btn-4">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                             <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
@@ -1257,7 +1585,7 @@
             </div>
 
         </div>
-        <!-- END PAGE 3 -->
+        <!-- END PAGE 4 -->
 
         <!-- SUCCESS STATE -->
         <div class="success-state" id="success-state">
