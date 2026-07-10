@@ -6,6 +6,8 @@ const classYear = params.get('year') || '2026';
 document.getElementById('class-year').textContent = classYear;
 document.title = `Analyst Class of ${classYear} Registration — Gold Coast Search Partners`;
 
+const STORAGE_KEY = `gcsp_registration_${classYear}`;
+
 
 // ── PAGE STATE ────────────────────────────────────────────────────────────────
 let currentPage = 1;
@@ -39,6 +41,96 @@ document.getElementById('regPhone')?.addEventListener('input', function () {
     else if (raw.length > 0)  this.value = `(${raw}`;
     else                      this.value = raw;
 });
+
+
+// ── SESSION SAVE / RESTORE ────────────────────────────────────────────────────
+// Persists answers across back-button navigation / accidental reloads so the
+// candidate never has to re-type everything (and we don't collect duplicate
+// half-filled submissions).
+
+function saveFormData() {
+    try {
+        const data = { text: {}, radio: {}, checkbox: {} };
+
+        document.querySelectorAll(
+            '#page-1 input[type="text"], #page-1 input[type="email"], #page-1 input[type="tel"], ' +
+            '#page-1 input[type="date"], #page-1 input[type="url"], #page-1 select, ' +
+            '#page-2 input[type="text"], #page-2 select'
+        ).forEach(el => {
+            if (el.id) data.text[el.id] = el.value;
+        });
+
+        const radioNames = new Set();
+        document.querySelectorAll('#page-1 input[type="radio"], #page-2 input[type="radio"]').forEach(el => radioNames.add(el.name));
+        radioNames.forEach(name => {
+            const checked = document.querySelector(`input[name="${name}"]:checked`);
+            if (checked) data.radio[name] = checked.value;
+        });
+
+        const checkboxNames = new Set();
+        document.querySelectorAll('#page-1 input[type="checkbox"], #page-2 input[type="checkbox"]').forEach(el => checkboxNames.add(el.name));
+        checkboxNames.forEach(name => {
+            data.checkbox[name] = [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(cb => cb.value);
+        });
+
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (e) { /* sessionStorage unavailable (private mode, etc.) — silently skip */ }
+}
+
+function restoreFormData() {
+    let data;
+    try {
+        const raw = sessionStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        data = JSON.parse(raw);
+    } catch (e) { return; }
+
+    // Text inputs and selects
+    Object.entries(data.text || {}).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el && val) el.value = val;
+    });
+
+    // Fire "change" on selects so conditional "Other" reveals show correctly
+    document.querySelectorAll('#page-1 select, #page-2 select').forEach(el => {
+        if (el.value) el.dispatchEvent(new Event('change'));
+    });
+
+    // Radio groups — fire "change" so conditional reveals show correctly
+    Object.entries(data.radio || {}).forEach(([name, val]) => {
+        const radio = document.querySelector(`input[name="${name}"][value="${val}"]`);
+        if (radio) {
+            radio.checked = true;
+            radio.dispatchEvent(new Event('change'));
+        }
+    });
+
+    // Checkbox groups
+    Object.entries(data.checkbox || {}).forEach(([name, vals]) => {
+        (vals || []).forEach(val => {
+            const cb = document.querySelector(`input[name="${name}"][value="${val}"]`);
+            if (cb) {
+                cb.checked = true;
+                cb.dispatchEvent(new Event('change'));
+            }
+        });
+    });
+}
+
+// Auto-save on every interaction (debounced so it doesn't fire on every keystroke)
+let _saveTimer;
+function debouncedSave() {
+    clearTimeout(_saveTimer);
+    _saveTimer = setTimeout(saveFormData, 400);
+}
+
+document.querySelectorAll('#page-1 input, #page-1 select, #page-2 input, #page-2 select').forEach(el => {
+    el.addEventListener('change', debouncedSave);
+    el.addEventListener('input', debouncedSave);
+});
+
+// Flush immediately before navigating away (header "Back" link, tab close, refresh)
+window.addEventListener('beforeunload', saveFormData);
 
 
 // ── CONDITIONAL REVEALS ───────────────────────────────────────────────────────
@@ -470,6 +562,7 @@ document.getElementById('next-btn')?.addEventListener('click', () => {
         document.querySelector('#page-1 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
+    saveFormData();
     showPage(2);
 });
 
@@ -487,6 +580,7 @@ document.getElementById('submit-btn')?.addEventListener('click', () => {
     btn.querySelector('span').textContent = 'Submitting…';
 
     setTimeout(() => {
+        try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
         document.getElementById('page-2').style.display = 'none';
         document.querySelector('.reg-title-block').style.display = 'none';
         document.querySelector('.step-track').style.display = 'none';
@@ -499,5 +593,5 @@ document.getElementById('submit-btn')?.addEventListener('click', () => {
 
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
+restoreFormData();
 showPage(1);
-updateProgress();
