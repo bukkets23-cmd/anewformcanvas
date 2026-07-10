@@ -133,6 +133,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 
 /* ── FIELD HINT ── */
 .field-hint {
+    display: block;
     font-size: 0.74rem;
     color: var(--gray-400);
     margin-top: -2px;
@@ -164,6 +165,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 
 .question-text {
+    display: block;
     font-size: 0.92rem;
     font-weight: 500;
     color: var(--gray-800);

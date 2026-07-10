@@ -512,11 +512,25 @@ function validatePage2() {
 
     // GPA
     const gpaEl = document.getElementById('gpa');
-    if (!gpaEl.value.trim()) {
+    const gpaVal = gpaEl.value.trim();
+    if (!gpaVal) {
         gpaEl.classList.add('has-error');
         document.getElementById('gpa-err').textContent = 'Please enter your GPA.';
         document.getElementById('s-education').classList.add('has-error');
         ok = false;
+    } else {
+        const gpaNum = parseFloat(gpaVal);
+        if (isNaN(gpaNum) || gpaNum < 0 || gpaNum > 4) {
+            gpaEl.classList.add('has-error');
+            document.getElementById('gpa-err').textContent = 'Please enter a valid GPA on a 4.0 scale.';
+            document.getElementById('s-education').classList.add('has-error');
+            ok = false;
+        } else if (gpaNum < 2.0) {
+            gpaEl.classList.add('has-error');
+            document.getElementById('gpa-err').textContent = 'GPA must be 2.0 or higher to submit.';
+            document.getElementById('s-education').classList.add('has-error');
+            ok = false;
+        }
     }
 
     // Investing club / student endowment
