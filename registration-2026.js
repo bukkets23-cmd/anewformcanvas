@@ -11,7 +11,7 @@ const STORAGE_KEY = `gcsp_registration_${classYear}`;
 
 // ── PAGE STATE ────────────────────────────────────────────────────────────────
 let currentPage = 1;
-const TOTAL_PAGES = 5;
+const TOTAL_PAGES = 6;
 
 function showPage(n) {
     document.querySelectorAll('.form-page').forEach((el, i) => {
@@ -25,7 +25,8 @@ function showPage(n) {
         2: 'Page 2 — Almost there.',
         3: 'Page 3 — Final stretch.',
         4: 'Page 4 — Almost done.',
-        5: 'Page 5 — Last one.',
+        5: 'Page 5 — Almost done.',
+        6: 'Page 6 — Last one.',
     };
     document.getElementById('page-subtitle').textContent = subtitles[n] || `Page ${n}`;
     currentPage = n;
@@ -37,6 +38,7 @@ document.getElementById('back-btn-2')?.addEventListener('click', () => showPage(
 document.getElementById('back-btn-3')?.addEventListener('click', () => showPage(2));
 document.getElementById('back-btn-4')?.addEventListener('click', () => showPage(3));
 document.getElementById('back-btn-5')?.addEventListener('click', () => showPage(4));
+document.getElementById('back-btn-6')?.addEventListener('click', () => showPage(5));
 
 
 // ── PHONE FORMATTING ──────────────────────────────────────────────────────────
@@ -64,23 +66,29 @@ function saveFormData() {
             '#page-2 input[type="text"], #page-2 select, ' +
             '#page-3 input[type="text"], #page-3 select, ' +
             '#page-4 input[type="text"], #page-4 select, #page-4 textarea, ' +
-            '#page-5 input[type="text"], #page-5 select'
+            '#page-5 input[type="text"], #page-5 select, ' +
+            '#page-6 input[type="text"], #page-6 select, #page-6 textarea'
         ).forEach(el => {
             if (el.id) data.text[el.id] = el.value;
         });
 
         const radioNames = new Set();
-        document.querySelectorAll('#page-1 input[type="radio"], #page-2 input[type="radio"], #page-3 input[type="radio"], #page-4 input[type="radio"], #page-5 input[type="radio"]').forEach(el => radioNames.add(el.name));
+        document.querySelectorAll('#page-1 input[type="radio"], #page-2 input[type="radio"], #page-3 input[type="radio"], #page-4 input[type="radio"], #page-5 input[type="radio"], #page-6 input[type="radio"]').forEach(el => radioNames.add(el.name));
         radioNames.forEach(name => {
             const checked = document.querySelector(`input[name="${name}"]:checked`);
             if (checked) data.radio[name] = checked.value;
         });
 
         const checkboxNames = new Set();
-        document.querySelectorAll('#page-1 input[type="checkbox"], #page-2 input[type="checkbox"], #page-3 input[type="checkbox"], #page-4 input[type="checkbox"], #page-5 input[type="checkbox"]').forEach(el => checkboxNames.add(el.name));
+        document.querySelectorAll('#page-1 input[type="checkbox"], #page-2 input[type="checkbox"], #page-3 input[type="checkbox"], #page-4 input[type="checkbox"], #page-5 input[type="checkbox"], #page-6 input[type="checkbox"]').forEach(el => checkboxNames.add(el.name));
         checkboxNames.forEach(name => {
             data.checkbox[name] = [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(cb => cb.value);
         });
+
+        const resumeInputEl = document.getElementById('resumeFile2026');
+        if (resumeInputEl?.files.length) {
+            data.resumeFileName2026 = resumeInputEl.files[0].name;
+        }
 
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (e) { /* sessionStorage unavailable (private mode, etc.) — silently skip */ }
@@ -101,7 +109,7 @@ function restoreFormData() {
     });
 
     // Fire "change" on selects so conditional "Other" reveals show correctly
-    document.querySelectorAll('#page-1 select, #page-2 select, #page-3 select, #page-4 select, #page-5 select').forEach(el => {
+    document.querySelectorAll('#page-1 select, #page-2 select, #page-3 select, #page-4 select, #page-5 select, #page-6 select').forEach(el => {
         if (el.value) el.dispatchEvent(new Event('change'));
     });
 
@@ -133,13 +141,109 @@ function debouncedSave() {
     _saveTimer = setTimeout(saveFormData, 400);
 }
 
-document.querySelectorAll('#page-1 input, #page-1 select, #page-2 input, #page-2 select, #page-3 input, #page-3 select, #page-4 input, #page-4 select, #page-4 textarea, #page-5 input, #page-5 select').forEach(el => {
+document.querySelectorAll('#page-1 input, #page-1 select, #page-2 input, #page-2 select, #page-3 input, #page-3 select, #page-4 input, #page-4 select, #page-4 textarea, #page-5 input, #page-5 select, #page-6 input, #page-6 select, #page-6 textarea').forEach(el => {
     el.addEventListener('change', debouncedSave);
     el.addEventListener('input', debouncedSave);
 });
 
 // Flush immediately before navigating away (header "Back" link, tab close, refresh)
 window.addEventListener('beforeunload', saveFormData);
+
+
+// ── RESUME UPLOAD (Page 6) ────────────────────────────────────────────────────
+// Reuses Form 1's upload-zone pattern. If the candidate already uploaded a
+// resume on Form 1 (or earlier in this session), we surface that instead of
+// making them upload it again.
+
+function getForm1ResumeFileName() {
+    try {
+        const raw = sessionStorage.getItem('gcsp_form1');
+        if (!raw) return '';
+        return JSON.parse(raw).resumeFileName || '';
+    } catch (e) { return ''; }
+}
+
+const resumeZone      = document.getElementById('upload-zone-2026');
+const resumeInput     = document.getElementById('resumeFile2026');
+const resumeChosen    = document.getElementById('file-chosen-2026');
+const resumeChooseBtn = document.getElementById('choose-file-btn-2026');
+
+function showResumeFileName(name) {
+    resumeChosen.textContent = name;
+    resumeChosen.classList.add('visible');
+    resumeChosen.classList.remove('needs-reselect');
+}
+
+function clearResumeError() {
+    document.getElementById('resumeFile2026-err').textContent = '';
+    document.getElementById('s-additional-info')?.classList.remove('has-error');
+}
+
+resumeChooseBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    resumeInput.click();
+});
+
+resumeZone?.addEventListener('click', () => resumeInput.click());
+
+resumeZone?.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    resumeZone.classList.add('drag-over');
+});
+resumeZone?.addEventListener('dragleave', () => resumeZone.classList.remove('drag-over'));
+resumeZone?.addEventListener('drop', (e) => {
+    e.preventDefault();
+    resumeZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) {
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        resumeInput.files = dt.files;
+        showResumeFileName(file.name);
+        clearResumeError();
+        updateProgress();
+    }
+});
+
+resumeInput?.addEventListener('change', () => {
+    if (resumeInput.files[0]) {
+        showResumeFileName(resumeInput.files[0].name);
+        clearResumeError();
+        updateProgress();
+    }
+});
+
+// True once the candidate has a resume attached — either chosen just now,
+// or already on file from Form 1 — so we never force a duplicate upload.
+function resumeSatisfied() {
+    return !!(resumeInput?.files.length) || !!getForm1ResumeFileName();
+}
+
+// Populate the upload zone on load: prefer a live file (already chosen this
+// load), then this page's own remembered filename (needs re-selecting after
+// a reload — browsers can't restore actual file bytes), then Form 1's record.
+function initResumeDisplay() {
+    if (!resumeInput || resumeInput.files.length) return;
+
+    let ownName = '';
+    try {
+        const raw = sessionStorage.getItem(STORAGE_KEY);
+        if (raw) ownName = JSON.parse(raw).resumeFileName2026 || '';
+    } catch (e) { /* ignore */ }
+
+    if (ownName) {
+        resumeChosen.textContent = `${ownName} — please re-select this file`;
+        resumeChosen.classList.add('visible', 'needs-reselect');
+        return;
+    }
+
+    const form1Name = getForm1ResumeFileName();
+    if (form1Name) {
+        resumeChosen.textContent = `${form1Name} — already on file from your earlier upload. Choose a new file only if you'd like to replace it.`;
+        resumeChosen.classList.add('visible');
+        resumeChosen.classList.remove('needs-reselect');
+    }
+}
 
 
 // ── CONDITIONAL REVEALS ───────────────────────────────────────────────────────
@@ -443,16 +547,22 @@ function countPage5Filled() {
 
 const PAGE5_TOTAL = 5;
 
+function countPage6Filled() {
+    return resumeSatisfied() ? 1 : 0;
+}
+
+const PAGE6_TOTAL = 1;
+
 function updateProgress() {
-    const counters = { 1: countPage1Filled, 2: countPage2Filled, 3: countPage3Filled, 4: countPage4Filled, 5: countPage5Filled };
-    const totals   = { 1: PAGE1_TOTAL,      2: PAGE2_TOTAL,      3: PAGE3_TOTAL,      4: PAGE4_TOTAL,      5: PAGE5_TOTAL };
+    const counters = { 1: countPage1Filled, 2: countPage2Filled, 3: countPage3Filled, 4: countPage4Filled, 5: countPage5Filled, 6: countPage6Filled };
+    const totals   = { 1: PAGE1_TOTAL,      2: PAGE2_TOTAL,      3: PAGE3_TOTAL,      4: PAGE4_TOTAL,      5: PAGE5_TOTAL,      6: PAGE6_TOTAL };
     const filled = (counters[currentPage] || countPage1Filled)();
     const total  = totals[currentPage] || PAGE1_TOTAL;
     const pct = Math.round((filled / total) * 100);
     document.getElementById('completion-fill').style.width = Math.min(pct, 100) + '%';
 }
 
-document.querySelectorAll('#page-1 input, #page-1 select, #page-2 input, #page-2 select, #page-3 input, #page-3 select, #page-4 input, #page-4 select, #page-4 textarea, #page-5 input, #page-5 select').forEach(el => {
+document.querySelectorAll('#page-1 input, #page-1 select, #page-2 input, #page-2 select, #page-3 input, #page-3 select, #page-4 input, #page-4 select, #page-4 textarea, #page-5 input, #page-5 select, #page-6 input, #page-6 select, #page-6 textarea').forEach(el => {
     el.addEventListener('change', updateProgress);
     el.addEventListener('input', updateProgress);
 });
@@ -482,10 +592,10 @@ function clearInputError(el) {
 }
 
 // Live clear on typing
-document.querySelectorAll('#page-1 input[type="text"], #page-1 input[type="email"], #page-1 input[type="tel"], #page-1 input[type="date"], #page-2 input[type="text"], #page-3 input[type="text"], #page-4 input[type="text"], #page-4 textarea, #page-5 input[type="text"]').forEach(el => {
+document.querySelectorAll('#page-1 input[type="text"], #page-1 input[type="email"], #page-1 input[type="tel"], #page-1 input[type="date"], #page-2 input[type="text"], #page-3 input[type="text"], #page-4 input[type="text"], #page-4 textarea, #page-5 input[type="text"], #page-6 input[type="text"], #page-6 textarea').forEach(el => {
     el.addEventListener('input', () => clearInputError(el));
 });
-document.querySelectorAll('#page-1 select, #page-2 select, #page-3 select, #page-4 select, #page-5 select').forEach(el => {
+document.querySelectorAll('#page-1 select, #page-2 select, #page-3 select, #page-4 select, #page-5 select, #page-6 select').forEach(el => {
     el.addEventListener('change', () => {
         el.classList.remove('has-error');
         const errEl = document.getElementById(el.id + '-err');
@@ -880,6 +990,22 @@ function validatePage5() {
     return ok;
 }
 
+function validatePage6() {
+    // Clear all page 6 errors first
+    document.querySelectorAll('#page-6 .err-msg').forEach(el => el.textContent = '');
+    document.querySelectorAll('#page-6 .form-section').forEach(el => el.classList.remove('has-error'));
+
+    let ok = true;
+
+    if (!resumeSatisfied()) {
+        document.getElementById('resumeFile2026-err').textContent = 'Please upload your resume.';
+        document.getElementById('s-additional-info').classList.add('has-error');
+        ok = false;
+    }
+
+    return ok;
+}
+
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
 
@@ -919,12 +1045,21 @@ document.getElementById('next-btn-4')?.addEventListener('click', () => {
     showPage(5);
 });
 
+document.getElementById('next-btn-5')?.addEventListener('click', () => {
+    if (!validatePage5()) {
+        document.querySelector('#page-5 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+    saveFormData();
+    showPage(6);
+});
+
 
 // ── SUBMIT ────────────────────────────────────────────────────────────────────
 
 document.getElementById('submit-btn')?.addEventListener('click', () => {
-    if (!validatePage5()) {
-        document.querySelector('#page-5 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (!validatePage6()) {
+        document.querySelector('#page-6 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
 
@@ -934,7 +1069,7 @@ document.getElementById('submit-btn')?.addEventListener('click', () => {
 
     setTimeout(() => {
         try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
-        document.getElementById('page-5').style.display = 'none';
+        document.getElementById('page-6').style.display = 'none';
         document.querySelector('.reg-title-block').style.display = 'none';
         document.querySelector('.step-track').style.display = 'none';
         document.querySelector('.completion-bar').style.display = 'none';
@@ -947,4 +1082,5 @@ document.getElementById('submit-btn')?.addEventListener('click', () => {
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 restoreFormData();
+initResumeDisplay();
 showPage(1);
