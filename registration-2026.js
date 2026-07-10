@@ -361,11 +361,12 @@ function countPage3Filled() {
     if (document.querySelectorAll('input[name="citizenshipVisa"]:checked').length) n++;
     if (document.querySelectorAll('input[name="gender"]:checked').length) n++;
     if (document.getElementById('hometownState')?.value) n++;
+    if (document.getElementById('hometownMetro')?.value) n++;
 
     return n;
 }
 
-const PAGE3_TOTAL = 4;
+const PAGE3_TOTAL = 5;
 
 function updateProgress() {
     const counters = { 1: countPage1Filled, 2: countPage2Filled, 3: countPage3Filled };
@@ -695,6 +696,15 @@ function validatePage3() {
     if (!hometownStateEl.value) {
         hometownStateEl.classList.add('has-error');
         document.getElementById('hometownState-err').textContent = 'Please make a selection.';
+        document.getElementById('s-background').classList.add('has-error');
+        ok = false;
+    }
+
+    // Hometown Metro/Regional Area
+    const hometownMetroEl = document.getElementById('hometownMetro');
+    if (!hometownMetroEl.value) {
+        hometownMetroEl.classList.add('has-error');
+        document.getElementById('hometownMetro-err').textContent = 'Please make a selection.';
         document.getElementById('s-background').classList.add('has-error');
         ok = false;
     }

@@ -1145,6 +1145,96 @@
                     <span class="err-msg" id="hometownState-err"></span>
                 </div>
 
+                <!-- Hometown Metro/Regional Area -->
+                <!-- TODO: Replace option list below with values from "Metro Regional Area Dropdown Choices" images I–IV -->
+                <div class="question-block" id="qb-hometownMetro">
+                    <label for="hometownMetro" class="question-text">Hometown Metro/Regional Area<span class="required-mark">*</span></label>
+                    <div class="select-wrap">
+                        <select id="hometownMetro" name="hometownMetro" required>
+                            <option value="" disabled selected>Select metro/regional area…</option>
+                            <option>International - N/A</option>
+                            <option>United States - N/A</option>
+                            <option>NYC Metro Area</option>
+                            <option>Los Angeles Metro Area</option>
+                            <option>Chicago Metro Area</option>
+                            <option>Dallas-Fort Worth Metro Area</option>
+                            <option>Houston Metro Area</option>
+                            <option>Washington DC Metro Area</option>
+                            <option>Miami-Fort Lauderdale Metro Area</option>
+                            <option>Philadelphia-Wilmington Metro Area</option>
+                            <option>Atlanta Metro Area</option>
+                            <option>Phoenix Metro Area</option>
+                            <option>Boston Metro Area</option>
+                            <option>San Francisco Bay Area</option>
+                            <option>Detroit Metro Area</option>
+                            <option>Seattle-Tacoma Metro Area</option>
+                            <option>Minneapolis-St. Paul Metro Area</option>
+                            <option>San Diego Metro Area</option>
+                            <option>Tampa-St. Petersburg Metro Area</option>
+                            <option>Denver Metro Area</option>
+                            <option>St. Louis Metro Area</option>
+                            <option>Baltimore Metro Area</option>
+                            <option>Charlotte Metro Area</option>
+                            <option>Orlando Metro Area</option>
+                            <option>San Antonio Metro Area</option>
+                            <option>Portland Metro Area</option>
+                            <option>Sacramento Metro Area</option>
+                            <option>Pittsburgh Metro Area</option>
+                            <option>Las Vegas Metro Area</option>
+                            <option>Cincinnati Metro Area</option>
+                            <option>Austin Metro Area</option>
+                            <option>Raleigh-Durham (Research Triangle) Metro Area</option>
+                            <option>Nashville Metro Area</option>
+                            <option>Columbus Metro Area</option>
+                            <option>Cleveland Metro Area</option>
+                            <option>Kansas City Metro Area</option>
+                            <option>Indianapolis Metro Area</option>
+                            <option>Salt Lake City Metro Area</option>
+                            <option>Boise Metro Area</option>
+                            <option>Jacksonville Metro Area</option>
+                            <option>Toronto Metro Area</option>
+                            <option>Vancouver Metro Area</option>
+                            <option>Montreal Metro Area</option>
+                        </select>
+                        <span class="select-arrow" aria-hidden="true">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <span class="err-msg" id="hometownMetro-err"></span>
+                </div>
+
+                <!-- Hometown city (not required) -->
+                <div class="question-block" id="qb-hometownCity">
+                    <label for="hometownCity" class="question-text">If you selected "United States" or "International" please list your hometown below</label>
+                    <input type="text" id="hometownCity" name="hometownCity" placeholder="Hometown city…">
+                    <span class="err-msg"></span>
+                </div>
+
+                <!-- Military Experience (not required) -->
+                <div class="question-block" id="qb-militaryExperience">
+                    <p class="question-text">Military Experience</p>
+                    <div class="checkbox-grid two-col" id="cg-militaryExperience">
+                        <label class="cb-item">
+                            <input type="checkbox" name="militaryExperience" value="International Military Vet">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">International Military Vet</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="militaryExperience" value="ROTC">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">ROTC</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="militaryExperience" value="US Military Vet">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">US Military Vet</span>
+                        </label>
+                    </div>
+                    <span class="err-msg"></span>
+                </div>
+
             </section>
 
             <!-- PAGE 3 FOOTER — SUBMIT -->
