@@ -65,6 +65,7 @@
                 <span class="page-pip" id="pip-2"></span>
                 <span class="page-pip" id="pip-3"></span>
                 <span class="page-pip" id="pip-4"></span>
+                <span class="page-pip" id="pip-5"></span>
             </div>
             <p class="reg-subtitle" id="page-subtitle">Page 1 — Complete all fields to continue.</p>
             <p class="required-legend">Fields marked with <span class="required-mark">*</span> are required.</p>
@@ -1565,11 +1566,286 @@
 
             </section>
 
-            <!-- PAGE 4 FOOTER — SUBMIT -->
+            <!-- PAGE 4 FOOTER — NEXT -->
+            <div class="form-footer">
+                <p class="required-note">Complete all sections on this page to continue.</p>
+                <div class="footer-actions">
+                    <button type="button" class="back-page-btn" id="back-btn-4">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                            <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Back
+                    </button>
+                    <button type="button" class="submit-btn" id="next-btn-4">
+                        <span>Continue to Page 5</span>
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                            <path d="M3 9h12M15 9l-4.5-4.5M15 9l-4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        <!-- END PAGE 4 -->
+
+        <!-- ═══════════════════════════════════════════════════════════ PAGE 5 -->
+        <div id="page-5" class="form-page">
+
+            <!-- No section header on this page — straight into the questions -->
+            <section class="form-section" id="s-page5">
+
+                <!-- Start Date Preference -->
+                <div class="question-block" id="qb-startDatePref">
+                    <p class="question-text">Start Date Preference<span class="required-mark">*</span></p>
+                    <div class="checkbox-grid two-col" id="cg-startDatePref">
+                        <label class="cb-item">
+                            <input type="checkbox" name="startDatePref" value="2026">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">2026</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="startDatePref" value="2027">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">2027</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="startDatePref" value="2028">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">2028</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="startDatePref" value="2029">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">2029</span>
+                        </label>
+                    </div>
+                    <span class="err-msg section-err" id="startDatePref-err"></span>
+                </div>
+
+                <!-- Summer 2028 On Cycle Recruiting -->
+                <div class="question-block" id="qb-onCycle2028">
+                    <p class="question-text">Are you interested in participating in the Summer 2028 On Cycle Recruiting Process?<span class="required-mark">*</span></p>
+                    <div class="radio-group" id="rg-onCycle2028">
+                        <label class="radio-item">
+                            <input type="radio" name="onCycle2028" value="Yes">
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">Yes</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="onCycle2028" value="No">
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">No</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="onCycle2028" value="Undecided">
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">Undecided</span>
+                        </label>
+                    </div>
+                    <span class="err-msg section-err" id="onCycle2028-err"></span>
+                </div>
+
+                <!-- GCSP Client Interests - Megafund -->
+                <div class="question-block" id="qb-megafundInterests">
+                    <p class="question-text">GCSP Client Interests - Megafund<span class="required-mark">*</span></p>
+                    <div class="checkbox-grid two-col" id="cg-megafundInterests">
+                        <label class="cb-item">
+                            <input type="checkbox" name="megafundInterests" value="Unsure/Still Exploring">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Unsure/Still Exploring</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="megafundInterests" value="Advent Tech">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Advent Tech</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="megafundInterests" value="Clayton Dubilier & Rice">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Clayton Dubilier &amp; Rice</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="megafundInterests" value="EQT Infrastructure">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">EQT Infrastructure</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="megafundInterests" value="Hg Capital">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Hg Capital</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="megafundInterests" value="KKR Infrastructure">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">KKR Infrastructure</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="megafundInterests" value="KKR PE Menlo Park">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">KKR PE Menlo Park</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="megafundInterests" value="Leonard Green Partners">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Leonard Green Partners</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="megafundInterests" value="TPG Capital">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">TPG Capital</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="megafundInterests" value="Not interested in Megafunds">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Not interested in Megafunds</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="megafundInterests" value="The Carlyle Group TMT Team">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">The Carlyle Group TMT Team</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="megafundInterests" value="Elliott Private Equity">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Elliott Private Equity</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="megafundInterests" value="GI Partners">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">GI Partners</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="megafundInterests" value="KKR Energy Real Assets">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">KKR Energy Real Assets</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="megafundInterests" value="KKR PE New York">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">KKR PE New York</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="megafundInterests" value="KKR SIG">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">KKR SIG</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="megafundInterests" value="Thoma Bravo">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Thoma Bravo</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="megafundInterests" value="TPG Sports">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">TPG Sports</span>
+                        </label>
+                    </div>
+                    <span class="err-msg section-err" id="megafundInterests-err"></span>
+                </div>
+
+                <!-- GCSP Client Interests - Middle Market/Growth -->
+                <div class="question-block" id="qb-middleMarketInterests">
+                    <p class="question-text">GCSP Client Interests - Middle Market/Growth<span class="required-mark">*</span></p>
+                    <div class="checkbox-grid two-col" id="cg-middleMarketInterests">
+                        <label class="cb-item">
+                            <input type="checkbox" name="middleMarketInterests" value="Unsure/Still Exploring">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Unsure/Still Exploring</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="middleMarketInterests" value="Arcline">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Arcline</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="middleMarketInterests" value="Eterna Growth Partners">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Eterna Growth Partners</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="middleMarketInterests" value="HGGC">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">HGGC</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="middleMarketInterests" value="Serent Capital">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Serent Capital</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="middleMarketInterests" value="Sumeru Equity Partners">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Sumeru Equity Partners</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="middleMarketInterests" value="Not interested in Middle Market Funds/Growth">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Not interested in Middle Market Funds/Growth</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="middleMarketInterests" value="Bessemer Venture Partners' Forge Fund">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Bessemer Venture Partners' Forge Fund</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="middleMarketInterests" value="GI Partners">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">GI Partners</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="middleMarketInterests" value="ICONIQ Growth">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">ICONIQ Growth</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="middleMarketInterests" value="Spectrum Equity">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Spectrum Equity</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="middleMarketInterests" value="Sunstone Partners">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Sunstone Partners</span>
+                        </label>
+                    </div>
+                    <span class="err-msg section-err" id="middleMarketInterests-err"></span>
+                </div>
+
+                <!-- GCSP Client Interests - Impact Investing -->
+                <div class="question-block" id="qb-impactInvestingInterests">
+                    <p class="question-text">GCSP Client Interests - Impact Investing<span class="required-mark">*</span></p>
+                    <div class="checkbox-grid two-col" id="cg-impactInvestingInterests">
+                        <label class="cb-item">
+                            <input type="checkbox" name="impactInvestingInterests" value="Unsure/Still Exploring">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Unsure/Still Exploring</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="impactInvestingInterests" value="Galvanize Climate Solutions">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Galvanize Climate Solutions</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="impactInvestingInterests" value="Not interested in impact investing">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Not interested in impact investing</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="impactInvestingInterests" value="KKR Global Impact">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">KKR Global Impact</span>
+                        </label>
+                    </div>
+                    <span class="err-msg section-err" id="impactInvestingInterests-err"></span>
+                </div>
+
+            </section>
+
+            <!-- PAGE 5 FOOTER — SUBMIT -->
             <div class="form-footer">
                 <p class="required-note">Complete all sections, then submit your registration.</p>
                 <div class="footer-actions">
-                    <button type="button" class="back-page-btn" id="back-btn-4">
+                    <button type="button" class="back-page-btn" id="back-btn-5">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                             <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
@@ -1585,7 +1861,7 @@
             </div>
 
         </div>
-        <!-- END PAGE 4 -->
+        <!-- END PAGE 5 -->
 
         <!-- SUCCESS STATE -->
         <div class="success-state" id="success-state">

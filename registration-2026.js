@@ -11,7 +11,7 @@ const STORAGE_KEY = `gcsp_registration_${classYear}`;
 
 // ── PAGE STATE ────────────────────────────────────────────────────────────────
 let currentPage = 1;
-const TOTAL_PAGES = 4;
+const TOTAL_PAGES = 5;
 
 function showPage(n) {
     document.querySelectorAll('.form-page').forEach((el, i) => {
@@ -24,7 +24,8 @@ function showPage(n) {
         1: 'Page 1 — Complete all fields to continue.',
         2: 'Page 2 — Almost there.',
         3: 'Page 3 — Final stretch.',
-        4: 'Page 4 — Last one.',
+        4: 'Page 4 — Almost done.',
+        5: 'Page 5 — Last one.',
     };
     document.getElementById('page-subtitle').textContent = subtitles[n] || `Page ${n}`;
     currentPage = n;
@@ -35,6 +36,7 @@ function showPage(n) {
 document.getElementById('back-btn-2')?.addEventListener('click', () => showPage(1));
 document.getElementById('back-btn-3')?.addEventListener('click', () => showPage(2));
 document.getElementById('back-btn-4')?.addEventListener('click', () => showPage(3));
+document.getElementById('back-btn-5')?.addEventListener('click', () => showPage(4));
 
 
 // ── PHONE FORMATTING ──────────────────────────────────────────────────────────
@@ -61,20 +63,21 @@ function saveFormData() {
             '#page-1 input[type="date"], #page-1 input[type="url"], #page-1 select, ' +
             '#page-2 input[type="text"], #page-2 select, ' +
             '#page-3 input[type="text"], #page-3 select, ' +
-            '#page-4 input[type="text"], #page-4 select, #page-4 textarea'
+            '#page-4 input[type="text"], #page-4 select, #page-4 textarea, ' +
+            '#page-5 input[type="text"], #page-5 select'
         ).forEach(el => {
             if (el.id) data.text[el.id] = el.value;
         });
 
         const radioNames = new Set();
-        document.querySelectorAll('#page-1 input[type="radio"], #page-2 input[type="radio"], #page-3 input[type="radio"], #page-4 input[type="radio"]').forEach(el => radioNames.add(el.name));
+        document.querySelectorAll('#page-1 input[type="radio"], #page-2 input[type="radio"], #page-3 input[type="radio"], #page-4 input[type="radio"], #page-5 input[type="radio"]').forEach(el => radioNames.add(el.name));
         radioNames.forEach(name => {
             const checked = document.querySelector(`input[name="${name}"]:checked`);
             if (checked) data.radio[name] = checked.value;
         });
 
         const checkboxNames = new Set();
-        document.querySelectorAll('#page-1 input[type="checkbox"], #page-2 input[type="checkbox"], #page-3 input[type="checkbox"], #page-4 input[type="checkbox"]').forEach(el => checkboxNames.add(el.name));
+        document.querySelectorAll('#page-1 input[type="checkbox"], #page-2 input[type="checkbox"], #page-3 input[type="checkbox"], #page-4 input[type="checkbox"], #page-5 input[type="checkbox"]').forEach(el => checkboxNames.add(el.name));
         checkboxNames.forEach(name => {
             data.checkbox[name] = [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(cb => cb.value);
         });
@@ -98,7 +101,7 @@ function restoreFormData() {
     });
 
     // Fire "change" on selects so conditional "Other" reveals show correctly
-    document.querySelectorAll('#page-1 select, #page-2 select, #page-3 select, #page-4 select').forEach(el => {
+    document.querySelectorAll('#page-1 select, #page-2 select, #page-3 select, #page-4 select, #page-5 select').forEach(el => {
         if (el.value) el.dispatchEvent(new Event('change'));
     });
 
@@ -130,7 +133,7 @@ function debouncedSave() {
     _saveTimer = setTimeout(saveFormData, 400);
 }
 
-document.querySelectorAll('#page-1 input, #page-1 select, #page-2 input, #page-2 select, #page-3 input, #page-3 select, #page-4 input, #page-4 select, #page-4 textarea').forEach(el => {
+document.querySelectorAll('#page-1 input, #page-1 select, #page-2 input, #page-2 select, #page-3 input, #page-3 select, #page-4 input, #page-4 select, #page-4 textarea, #page-5 input, #page-5 select').forEach(el => {
     el.addEventListener('change', debouncedSave);
     el.addEventListener('input', debouncedSave);
 });
@@ -327,6 +330,31 @@ document.getElementById('gender-let-me-type')?.addEventListener('change', functi
     });
 });
 
+// Page 5 checkbox groups: clear error on any change
+[
+    { name: 'startDatePref',            errId: 'startDatePref-err'            },
+    { name: 'megafundInterests',        errId: 'megafundInterests-err'        },
+    { name: 'middleMarketInterests',    errId: 'middleMarketInterests-err'    },
+    { name: 'impactInvestingInterests', errId: 'impactInvestingInterests-err' },
+].forEach(({ name, errId }) => {
+    document.querySelectorAll(`input[name="${name}"]`).forEach(cb => {
+        cb.addEventListener('change', () => {
+            document.getElementById(errId).textContent = '';
+            document.getElementById('s-page5')?.classList.remove('has-error');
+            updateProgress();
+        });
+    });
+});
+
+// On Cycle 2028: clear error on any selection
+document.querySelectorAll('input[name="onCycle2028"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+        document.getElementById('onCycle2028-err').textContent = '';
+        document.getElementById('s-page5')?.classList.remove('has-error');
+        updateProgress();
+    });
+});
+
 
 // ── PROGRESS ─────────────────────────────────────────────────────────────────
 // Counts required fields on the current page only (progress bar scoped per page)
@@ -401,16 +429,30 @@ function countPage4Filled() {
 
 const PAGE4_TOTAL = 6;
 
+function countPage5Filled() {
+    let n = 0;
+
+    if (document.querySelectorAll('input[name="startDatePref"]:checked').length) n++;
+    if (document.querySelector('input[name="onCycle2028"]:checked')) n++;
+    if (document.querySelectorAll('input[name="megafundInterests"]:checked').length) n++;
+    if (document.querySelectorAll('input[name="middleMarketInterests"]:checked').length) n++;
+    if (document.querySelectorAll('input[name="impactInvestingInterests"]:checked').length) n++;
+
+    return n;
+}
+
+const PAGE5_TOTAL = 5;
+
 function updateProgress() {
-    const counters = { 1: countPage1Filled, 2: countPage2Filled, 3: countPage3Filled, 4: countPage4Filled };
-    const totals   = { 1: PAGE1_TOTAL,      2: PAGE2_TOTAL,      3: PAGE3_TOTAL,      4: PAGE4_TOTAL };
+    const counters = { 1: countPage1Filled, 2: countPage2Filled, 3: countPage3Filled, 4: countPage4Filled, 5: countPage5Filled };
+    const totals   = { 1: PAGE1_TOTAL,      2: PAGE2_TOTAL,      3: PAGE3_TOTAL,      4: PAGE4_TOTAL,      5: PAGE5_TOTAL };
     const filled = (counters[currentPage] || countPage1Filled)();
     const total  = totals[currentPage] || PAGE1_TOTAL;
     const pct = Math.round((filled / total) * 100);
     document.getElementById('completion-fill').style.width = Math.min(pct, 100) + '%';
 }
 
-document.querySelectorAll('#page-1 input, #page-1 select, #page-2 input, #page-2 select, #page-3 input, #page-3 select, #page-4 input, #page-4 select, #page-4 textarea').forEach(el => {
+document.querySelectorAll('#page-1 input, #page-1 select, #page-2 input, #page-2 select, #page-3 input, #page-3 select, #page-4 input, #page-4 select, #page-4 textarea, #page-5 input, #page-5 select').forEach(el => {
     el.addEventListener('change', updateProgress);
     el.addEventListener('input', updateProgress);
 });
@@ -440,10 +482,10 @@ function clearInputError(el) {
 }
 
 // Live clear on typing
-document.querySelectorAll('#page-1 input[type="text"], #page-1 input[type="email"], #page-1 input[type="tel"], #page-1 input[type="date"], #page-2 input[type="text"], #page-3 input[type="text"], #page-4 input[type="text"], #page-4 textarea').forEach(el => {
+document.querySelectorAll('#page-1 input[type="text"], #page-1 input[type="email"], #page-1 input[type="tel"], #page-1 input[type="date"], #page-2 input[type="text"], #page-3 input[type="text"], #page-4 input[type="text"], #page-4 textarea, #page-5 input[type="text"]').forEach(el => {
     el.addEventListener('input', () => clearInputError(el));
 });
-document.querySelectorAll('#page-1 select, #page-2 select, #page-3 select, #page-4 select').forEach(el => {
+document.querySelectorAll('#page-1 select, #page-2 select, #page-3 select, #page-4 select, #page-5 select').forEach(el => {
     el.addEventListener('change', () => {
         el.classList.remove('has-error');
         const errEl = document.getElementById(el.id + '-err');
@@ -792,6 +834,52 @@ function validatePage4() {
     return ok;
 }
 
+function validatePage5() {
+    // Clear all page 5 errors first
+    document.querySelectorAll('#page-5 .err-msg').forEach(el => el.textContent = '');
+    document.querySelectorAll('#page-5 input').forEach(el => el.classList.remove('has-error', 'is-valid'));
+    document.querySelectorAll('#page-5 .form-section').forEach(el => el.classList.remove('has-error'));
+
+    let ok = true;
+
+    // Start Date Preference — at least one checkbox
+    if (!document.querySelectorAll('input[name="startDatePref"]:checked').length) {
+        document.getElementById('startDatePref-err').textContent = 'Please select at least one option.';
+        document.getElementById('s-page5').classList.add('has-error');
+        ok = false;
+    }
+
+    // Summer 2028 On Cycle Recruiting
+    if (!document.querySelector('input[name="onCycle2028"]:checked')) {
+        document.getElementById('onCycle2028-err').textContent = 'Please select an option.';
+        document.getElementById('s-page5').classList.add('has-error');
+        ok = false;
+    }
+
+    // GCSP Client Interests — Megafund
+    if (!document.querySelectorAll('input[name="megafundInterests"]:checked').length) {
+        document.getElementById('megafundInterests-err').textContent = 'Please select at least one option.';
+        document.getElementById('s-page5').classList.add('has-error');
+        ok = false;
+    }
+
+    // GCSP Client Interests — Middle Market/Growth
+    if (!document.querySelectorAll('input[name="middleMarketInterests"]:checked').length) {
+        document.getElementById('middleMarketInterests-err').textContent = 'Please select at least one option.';
+        document.getElementById('s-page5').classList.add('has-error');
+        ok = false;
+    }
+
+    // GCSP Client Interests — Impact Investing
+    if (!document.querySelectorAll('input[name="impactInvestingInterests"]:checked').length) {
+        document.getElementById('impactInvestingInterests-err').textContent = 'Please select at least one option.';
+        document.getElementById('s-page5').classList.add('has-error');
+        ok = false;
+    }
+
+    return ok;
+}
+
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
 
@@ -822,12 +910,21 @@ document.getElementById('next-btn-3')?.addEventListener('click', () => {
     showPage(4);
 });
 
+document.getElementById('next-btn-4')?.addEventListener('click', () => {
+    if (!validatePage4()) {
+        document.querySelector('#page-4 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+    saveFormData();
+    showPage(5);
+});
+
 
 // ── SUBMIT ────────────────────────────────────────────────────────────────────
 
 document.getElementById('submit-btn')?.addEventListener('click', () => {
-    if (!validatePage4()) {
-        document.querySelector('#page-4 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (!validatePage5()) {
+        document.querySelector('#page-5 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
 
@@ -837,7 +934,7 @@ document.getElementById('submit-btn')?.addEventListener('click', () => {
 
     setTimeout(() => {
         try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
-        document.getElementById('page-4').style.display = 'none';
+        document.getElementById('page-5').style.display = 'none';
         document.querySelector('.reg-title-block').style.display = 'none';
         document.querySelector('.step-track').style.display = 'none';
         document.querySelector('.completion-bar').style.display = 'none';
