@@ -410,18 +410,124 @@
         <!-- ═══════════════════════════════════════════════════════════ PAGE 2 -->
         <div id="page-2" class="form-page">
 
-            <!-- Additional questions will be added here -->
-            <section class="form-section coming-soon-section">
-                <div class="coming-soon-inner">
-                    <div class="coming-soon-icon">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                            <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.8"/>
-                            <path d="M16 10v6l4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                    <p class="coming-soon-text">More questions are on their way.</p>
-                    <p class="coming-soon-sub">Submit below to complete your registration — this page will be populated shortly.</p>
+            <!-- 01 EDUCATION -->
+            <section class="form-section" id="s-education">
+                <div class="section-label">
+                    <span class="section-num">01</span>
+                    <h2 class="section-title">Education</h2>
                 </div>
+
+                <!-- Degree(s) -->
+                <div class="question-block" id="qb-degree">
+                    <p class="question-text">Degree(s)<span class="required-mark">*</span></p>
+                    <div class="checkbox-grid two-col" id="cg-degree">
+                        <label class="cb-item">
+                            <input type="checkbox" name="degree" value="Bachelors">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Bachelors</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="degree" value="Masters">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Masters</span>
+                        </label>
+                    </div>
+                    <span class="err-msg section-err" id="degree-err"></span>
+                </div>
+
+                <!-- Undergrad Year -->
+                <div class="question-block" id="qb-undergradYear">
+                    <label for="undergradYear" class="question-text">Undergrad Year<span class="required-mark">*</span></label>
+                    <div class="select-wrap narrow">
+                        <select id="undergradYear" name="undergradYear" required>
+                            <option value="" disabled selected>Select year…</option>
+                            <option>2017</option>
+                            <option>2018</option>
+                            <option>2019</option>
+                            <option>2020</option>
+                            <option>2021</option>
+                            <option>2022</option>
+                            <option>2023</option>
+                            <option>2024</option>
+                            <option>2025</option>
+                            <option>2026</option>
+                            <option>2027</option>
+                            <option>2028</option>
+                        </select>
+                        <span class="select-arrow" aria-hidden="true">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <span class="err-msg" id="undergradYear-err"></span>
+                </div>
+
+                <!-- Expected Graduation Term -->
+                <div class="question-block" id="qb-gradTerm">
+                    <p class="question-text">What is your expected graduation term? Please select which best applies to you:<span class="required-mark">*</span></p>
+                    <div class="radio-group stacked" id="rg-gradTerm">
+                        <label class="radio-item wide">
+                            <input type="radio" name="gradTerm" value="Spring (May/June 2026)" required>
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">Spring (May/June 2026)</span>
+                        </label>
+                        <label class="radio-item wide">
+                            <input type="radio" name="gradTerm" value="Fall/Winter (Dec 2025/Jan 2026)">
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">Fall/Winter (Dec 2025/Jan 2026)</span>
+                        </label>
+                        <label class="radio-item wide">
+                            <input type="radio" name="gradTerm" value="Already graduated">
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">Already graduated</span>
+                        </label>
+                        <label class="radio-item wide">
+                            <input type="radio" name="gradTerm" value="Deferred Graduation (2027)">
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">Deferred Graduation (2027)</span>
+                        </label>
+                        <label class="radio-item wide">
+                            <input type="radio" name="gradTerm" value="Other">
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">Other</span>
+                        </label>
+                    </div>
+                    <div class="reveal-wrap" id="gradTerm-reveal">
+                        <input type="text" id="gradTermOther" placeholder="Please specify…">
+                        <span class="err-msg" id="gradTermOther-err"></span>
+                    </div>
+                    <span class="err-msg section-err" id="gradTerm-err"></span>
+                </div>
+
+                <!-- Masters Grad Year -->
+                <div class="question-block" id="qb-mastersGradYear">
+                    <label for="mastersGradYear" class="question-text">Masters Grad Year</label>
+                    <div class="select-wrap narrow">
+                        <select id="mastersGradYear" name="mastersGradYear">
+                            <option value="" disabled selected>Select year…</option>
+                            <option>2017</option>
+                            <option>2018</option>
+                            <option>2019</option>
+                            <option>2020</option>
+                            <option>2021</option>
+                            <option>2022</option>
+                            <option>2023</option>
+                            <option>2024</option>
+                            <option>2025</option>
+                            <option>2026</option>
+                            <option>2027</option>
+                            <option>2028</option>
+                        </select>
+                        <span class="select-arrow" aria-hidden="true">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <span class="err-msg" id="mastersGradYear-err"></span>
+                </div>
+
             </section>
 
             <!-- PAGE 2 FOOTER — SUBMIT -->

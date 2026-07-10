@@ -25,6 +25,7 @@ function showPage(n) {
     document.getElementById('page-subtitle').textContent = subtitles[n] || `Page ${n}`;
     currentPage = n;
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    updateProgress();
 }
 
 document.getElementById('back-btn')?.addEventListener('click', () => showPage(1));
@@ -88,6 +89,34 @@ document.querySelectorAll('input[name="renewables"]').forEach(radio => {
     });
 });
 
+// Expected graduation term: show a text box when "Other" is selected
+document.querySelectorAll('input[name="gradTerm"]').forEach(radio => {
+    radio.addEventListener('change', function () {
+        const reveal = document.getElementById('gradTerm-reveal');
+        const otherInput = document.getElementById('gradTermOther');
+        if (this.value === 'Other') {
+            reveal.classList.add('visible');
+            otherInput.focus();
+        } else {
+            reveal.classList.remove('visible');
+            otherInput.value = '';
+            otherInput.classList.remove('has-error');
+            document.getElementById('gradTermOther-err').textContent = '';
+        }
+        clearSectionError('gradTerm');
+        updateProgress();
+    });
+});
+
+// Degree(s) checkboxes: clear error on any change
+document.querySelectorAll('input[name="degree"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+        document.getElementById('degree-err').textContent = '';
+        document.getElementById('s-education')?.classList.remove('has-error');
+        updateProgress();
+    });
+});
+
 // Firm / office location selects: show a text box when "Other (not listed)" is chosen
 function wireOtherReveal(selectId, revealId, otherInputId, otherErrId) {
     const select = document.getElementById(selectId);
@@ -110,7 +139,7 @@ wireOtherReveal('officeLocation', 'officeLocation-reveal', 'officeLocationOther'
 
 
 // ── PROGRESS ─────────────────────────────────────────────────────────────────
-// Counts Page 1 required fields only (progress bar scoped to current page)
+// Counts required fields on the current page only (progress bar scoped per page)
 
 function countPage1Filled() {
     let n = 0;
@@ -135,12 +164,26 @@ function countPage1Filled() {
 
 const PAGE1_TOTAL = 12;
 
+function countPage2Filled() {
+    let n = 0;
+
+    if (document.querySelector('input[name="degree"]:checked')) n++;
+    if (document.getElementById('undergradYear')?.value) n++;
+    if (document.querySelector('input[name="gradTerm"]:checked')) n++;
+
+    return n;
+}
+
+const PAGE2_TOTAL = 3;
+
 function updateProgress() {
-    const pct = Math.round((countPage1Filled() / PAGE1_TOTAL) * 100);
+    const filled = currentPage === 2 ? countPage2Filled() : countPage1Filled();
+    const total  = currentPage === 2 ? PAGE2_TOTAL : PAGE1_TOTAL;
+    const pct = Math.round((filled / total) * 100);
     document.getElementById('completion-fill').style.width = Math.min(pct, 100) + '%';
 }
 
-document.querySelectorAll('#page-1 input, #page-1 select').forEach(el => {
+document.querySelectorAll('#page-1 input, #page-1 select, #page-2 input, #page-2 select').forEach(el => {
     el.addEventListener('change', updateProgress);
     el.addEventListener('input', updateProgress);
 });
@@ -170,10 +213,10 @@ function clearInputError(el) {
 }
 
 // Live clear on typing
-document.querySelectorAll('#page-1 input[type="text"], #page-1 input[type="email"], #page-1 input[type="tel"], #page-1 input[type="date"]').forEach(el => {
+document.querySelectorAll('#page-1 input[type="text"], #page-1 input[type="email"], #page-1 input[type="tel"], #page-1 input[type="date"], #page-2 input[type="text"]').forEach(el => {
     el.addEventListener('input', () => clearInputError(el));
 });
-document.querySelectorAll('#page-1 select').forEach(el => {
+document.querySelectorAll('#page-1 select, #page-2 select').forEach(el => {
     el.addEventListener('change', () => {
         el.classList.remove('has-error');
         const errEl = document.getElementById(el.id + '-err');
@@ -293,8 +336,46 @@ function validatePage1() {
 }
 
 function validatePage2() {
-    // No required fields on Page 2 yet — returns true until questions are added
-    return true;
+    // Clear all page 2 errors first
+    document.querySelectorAll('#page-2 .err-msg').forEach(el => el.textContent = '');
+    document.querySelectorAll('#page-2 input, #page-2 select').forEach(el => el.classList.remove('has-error', 'is-valid'));
+    document.querySelectorAll('#page-2 .form-section').forEach(el => el.classList.remove('has-error'));
+
+    let ok = true;
+
+    // Degree(s) — at least one checkbox
+    if (!document.querySelector('input[name="degree"]:checked')) {
+        document.getElementById('degree-err').textContent = 'Please select at least one option.';
+        document.getElementById('s-education').classList.add('has-error');
+        ok = false;
+    }
+
+    // Undergrad Year
+    const undergradYearEl = document.getElementById('undergradYear');
+    if (!undergradYearEl.value) {
+        undergradYearEl.classList.add('has-error');
+        document.getElementById('undergradYear-err').textContent = 'Please select a year.';
+        document.getElementById('s-education').classList.add('has-error');
+        ok = false;
+    }
+
+    // Expected graduation term
+    const gradTermChecked = document.querySelector('input[name="gradTerm"]:checked');
+    if (!gradTermChecked) {
+        document.getElementById('gradTerm-err').textContent = 'Please select an option.';
+        document.getElementById('s-education').classList.add('has-error');
+        ok = false;
+    } else if (gradTermChecked.value === 'Other') {
+        const otherInput = document.getElementById('gradTermOther');
+        if (!otherInput.value.trim()) {
+            otherInput.classList.add('has-error');
+            document.getElementById('gradTermOther-err').textContent = 'Please specify your graduation term.';
+            document.getElementById('s-education').classList.add('has-error');
+            ok = false;
+        }
+    }
+
+    return ok;
 }
 
 
