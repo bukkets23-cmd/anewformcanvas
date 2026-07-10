@@ -1011,6 +1011,140 @@
                     <span class="err-msg section-err" id="citizenshipVisa-err"></span>
                 </div>
 
+                <!-- Gender Identity -->
+                <div class="question-block" id="qb-gender">
+                    <p class="question-text">Which of the following most accurately describe(s) you? (Choose as many as you like)<span class="required-mark">*</span></p>
+                    <div class="checkbox-grid two-col" id="cg-gender">
+                        <label class="cb-item">
+                            <input type="checkbox" name="gender" value="Female">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Female</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="gender" value="Male">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Male</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="gender" value="Non-Binary">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Non-Binary</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="gender" value="Transgender">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Transgender</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="gender" value="Intersex">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Intersex</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="gender" value="I prefer not to say">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">I prefer not to say</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="gender" value="Let me type" id="gender-let-me-type">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Let me type…</span>
+                        </label>
+                    </div>
+                    <div class="reveal-wrap" id="gender-reveal">
+                        <input type="text" id="genderCustom" placeholder="Please describe yourself…">
+                        <span class="err-msg" id="genderCustom-err"></span>
+                    </div>
+                    <span class="err-msg section-err" id="gender-err"></span>
+                </div>
+
+                <!-- LGBTQ (not required) -->
+                <div class="question-block" id="qb-lgbtq">
+                    <p class="question-text">Do you consider yourself a member of the LGBTQ Community?</p>
+                    <div class="radio-group" id="rg-lgbtq">
+                        <label class="radio-item">
+                            <input type="radio" name="lgbtq" value="Yes">
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">Yes</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="lgbtq" value="No">
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">No</span>
+                        </label>
+                    </div>
+                    <span class="err-msg"></span>
+                </div>
+
+                <!-- Hometown State -->
+                <!-- TODO: Replace option list below with values from "Form Hometown State Dropdown Choices" images I–III -->
+                <div class="question-block" id="qb-hometownState">
+                    <label for="hometownState" class="question-text">Hometown State<span class="required-mark">*</span></label>
+                    <div class="select-wrap">
+                        <select id="hometownState" name="hometownState" required>
+                            <option value="" disabled selected>Select state…</option>
+                            <option>International - N/A</option>
+                            <option>Alabama</option>
+                            <option>Alaska</option>
+                            <option>Arizona</option>
+                            <option>Arkansas</option>
+                            <option>California</option>
+                            <option>Colorado</option>
+                            <option>Connecticut</option>
+                            <option>Delaware</option>
+                            <option>Florida</option>
+                            <option>Georgia</option>
+                            <option>Hawaii</option>
+                            <option>Idaho</option>
+                            <option>Illinois</option>
+                            <option>Indiana</option>
+                            <option>Iowa</option>
+                            <option>Kansas</option>
+                            <option>Kentucky</option>
+                            <option>Louisiana</option>
+                            <option>Maine</option>
+                            <option>Maryland</option>
+                            <option>Massachusetts</option>
+                            <option>Michigan</option>
+                            <option>Minnesota</option>
+                            <option>Mississippi</option>
+                            <option>Missouri</option>
+                            <option>Montana</option>
+                            <option>Nebraska</option>
+                            <option>Nevada</option>
+                            <option>New Hampshire</option>
+                            <option>New Jersey</option>
+                            <option>New Mexico</option>
+                            <option>New York</option>
+                            <option>North Carolina</option>
+                            <option>North Dakota</option>
+                            <option>Ohio</option>
+                            <option>Oklahoma</option>
+                            <option>Oregon</option>
+                            <option>Pennsylvania</option>
+                            <option>Rhode Island</option>
+                            <option>South Carolina</option>
+                            <option>South Dakota</option>
+                            <option>Tennessee</option>
+                            <option>Texas</option>
+                            <option>Utah</option>
+                            <option>Vermont</option>
+                            <option>Virginia</option>
+                            <option>Washington</option>
+                            <option>Washington DC</option>
+                            <option>West Virginia</option>
+                            <option>Wisconsin</option>
+                            <option>Wyoming</option>
+                        </select>
+                        <span class="select-arrow" aria-hidden="true">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <span class="err-msg" id="hometownState-err"></span>
+                </div>
+
             </section>
 
             <!-- PAGE 3 FOOTER — SUBMIT -->

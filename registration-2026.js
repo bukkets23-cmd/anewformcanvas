@@ -285,6 +285,30 @@ document.querySelector('input[name="citizenshipVisa"][value="Visa: Other"]')?.ad
     }
 });
 
+// Gender Identity checkboxes: clear error on any change
+document.querySelectorAll('input[name="gender"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+        document.getElementById('gender-err').textContent = '';
+        document.getElementById('s-background')?.classList.remove('has-error');
+        updateProgress();
+    });
+});
+
+// Gender Identity: show a text box when "Let me type…" is checked
+document.getElementById('gender-let-me-type')?.addEventListener('change', function () {
+    const reveal = document.getElementById('gender-reveal');
+    const customInput = document.getElementById('genderCustom');
+    if (this.checked) {
+        reveal.classList.add('visible');
+        customInput.focus();
+    } else {
+        reveal.classList.remove('visible');
+        customInput.value = '';
+        customInput.classList.remove('has-error');
+        document.getElementById('genderCustom-err').textContent = '';
+    }
+});
+
 
 // ── PROGRESS ─────────────────────────────────────────────────────────────────
 // Counts required fields on the current page only (progress bar scoped per page)
@@ -335,11 +359,13 @@ function countPage3Filled() {
 
     if (document.querySelectorAll('input[name="ethnicityBg"]:checked').length) n++;
     if (document.querySelectorAll('input[name="citizenshipVisa"]:checked').length) n++;
+    if (document.querySelectorAll('input[name="gender"]:checked').length) n++;
+    if (document.getElementById('hometownState')?.value) n++;
 
     return n;
 }
 
-const PAGE3_TOTAL = 2;
+const PAGE3_TOTAL = 4;
 
 function updateProgress() {
     const counters = { 1: countPage1Filled, 2: countPage2Filled, 3: countPage3Filled };
@@ -620,7 +646,7 @@ function validatePage2() {
 function validatePage3() {
     // Clear all page 3 errors first
     document.querySelectorAll('#page-3 .err-msg').forEach(el => el.textContent = '');
-    document.querySelectorAll('#page-3 input').forEach(el => el.classList.remove('has-error', 'is-valid'));
+    document.querySelectorAll('#page-3 input, #page-3 select').forEach(el => el.classList.remove('has-error', 'is-valid'));
     document.querySelectorAll('#page-3 .form-section').forEach(el => el.classList.remove('has-error'));
 
     let ok = true;
@@ -646,6 +672,31 @@ function validatePage3() {
             document.getElementById('s-background').classList.add('has-error');
             ok = false;
         }
+    }
+
+    // Gender Identity — at least one checkbox
+    const genderChecked = document.querySelectorAll('input[name="gender"]:checked');
+    if (!genderChecked.length) {
+        document.getElementById('gender-err').textContent = 'Please select at least one option.';
+        document.getElementById('s-background').classList.add('has-error');
+        ok = false;
+    } else if (document.getElementById('gender-let-me-type')?.checked) {
+        const customInput = document.getElementById('genderCustom');
+        if (!customInput.value.trim()) {
+            customInput.classList.add('has-error');
+            document.getElementById('genderCustom-err').textContent = 'Please describe yourself, or uncheck "Let me type."';
+            document.getElementById('s-background').classList.add('has-error');
+            ok = false;
+        }
+    }
+
+    // Hometown State
+    const hometownStateEl = document.getElementById('hometownState');
+    if (!hometownStateEl.value) {
+        hometownStateEl.classList.add('has-error');
+        document.getElementById('hometownState-err').textContent = 'Please make a selection.';
+        document.getElementById('s-background').classList.add('has-error');
+        ok = false;
     }
 
     return ok;
