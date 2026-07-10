@@ -63,6 +63,7 @@
             <div class="page-indicator">
                 <span class="page-pip active" id="pip-1"></span>
                 <span class="page-pip" id="pip-2"></span>
+                <span class="page-pip" id="pip-3"></span>
             </div>
             <p class="reg-subtitle" id="page-subtitle">Page 1 — Complete all fields to continue.</p>
             <p class="required-legend">Fields marked with <span class="required-mark">*</span> are required.</p>
@@ -799,11 +800,224 @@
                 </div>
             </section>
 
-            <!-- PAGE 2 FOOTER — SUBMIT -->
+            <!-- PAGE 2 FOOTER — NEXT -->
+            <div class="form-footer">
+                <p class="required-note">Complete all sections on this page to continue.</p>
+                <div class="footer-actions">
+                    <button type="button" class="back-page-btn" id="back-btn-2">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                            <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Back
+                    </button>
+                    <button type="button" class="submit-btn" id="next-btn-2">
+                        <span>Continue to Page 3</span>
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                            <path d="M3 9h12M15 9l-4.5-4.5M15 9l-4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        <!-- END PAGE 2 -->
+
+        <!-- ═══════════════════════════════════════════════════════════ PAGE 3 -->
+        <div id="page-3" class="form-page">
+
+            <!-- 01 BACKGROUND -->
+            <section class="form-section" id="s-background">
+                <div class="section-label">
+                    <span class="section-num">01</span>
+                    <h2 class="section-title">Background</h2>
+                </div>
+
+                <!-- Ethnicity -->
+                <div class="question-block" id="qb-ethnicity">
+                    <p class="question-text">Ethnicity (Select all that apply)<span class="required-mark">*</span></p>
+                    <div class="checkbox-grid two-col" id="cg-ethnicity">
+                        <label class="cb-item">
+                            <input type="checkbox" name="ethnicityBg" value="Asian/South Asian/Indian">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Asian/South Asian/Indian</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="ethnicityBg" value="Black/African/African American">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Black/African/African American</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="ethnicityBg" value="Hispanic/Latino">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Hispanic/Latino</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="ethnicityBg" value="Native American/Alaska Native">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Native American/Alaska Native</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="ethnicityBg" value="Native Hawaiian/Pacific Islander">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Native Hawaiian/Pacific Islander</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="ethnicityBg" value="White/Caucasian">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">White/Caucasian</span>
+                        </label>
+                    </div>
+                    <span class="err-msg section-err" id="ethnicityBg-err"></span>
+                </div>
+
+                <!-- Languages (not required) -->
+                <div class="question-block" id="qb-languages">
+                    <p class="question-text">Languages</p>
+                    <div class="checkbox-grid three-col" id="cg-languages">
+                        <label class="cb-item">
+                            <input type="checkbox" name="languages" value="English">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">English</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="languages" value="Spanish">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Spanish</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="languages" value="Mandarin">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Mandarin</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="languages" value="Cantonese">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Cantonese</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="languages" value="French">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">French</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="languages" value="German">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">German</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="languages" value="Hindi">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Hindi</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="languages" value="Japanese">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Japanese</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="languages" value="Portuguese">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Portuguese</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="languages" value="Other">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Other</span>
+                        </label>
+                    </div>
+                    <span class="err-msg"></span>
+                </div>
+
+                <!-- Citizenship / Visa -->
+                <div class="question-block" id="qb-citizenshipVisa">
+                    <p class="question-text">Citizenship/Visa (select all that apply)<span class="required-mark">*</span></p>
+                    <div class="checkbox-grid two-col" id="cg-citizenshipVisa">
+                        <label class="cb-item">
+                            <input type="checkbox" name="citizenshipVisa" value="US Citizen">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">US Citizen</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="citizenshipVisa" value="US Greencard">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">US Greencard</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="citizenshipVisa" value="US Permanent Resident">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">US Permanent Resident</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="citizenshipVisa" value="Visa: E-3 (US/Australia)">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Visa: E-3 (US/Australia)</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="citizenshipVisa" value="Visa: F1">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Visa: F1</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="citizenshipVisa" value="Visa: H1-B (Obtained/Approved)">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Visa: H1-B (Obtained/Approved)</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="citizenshipVisa" value="Visa: H1-B (to Apply)">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Visa: H1-B (to Apply)</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="citizenshipVisa" value="Visa: H1-B1 (Chilean &amp; Singaporean Citizens)">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Visa: H1-B1 (Chilean &amp; Singaporean Citizens)</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="citizenshipVisa" value="Visa: TN">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Visa: TN</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="citizenshipVisa" value="Canadian Citizen">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Canadian Citizen</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="citizenshipVisa" value="Mexican Citizen">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Mexican Citizen</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="citizenshipVisa" value="EU Citizen">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">EU Citizen</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="citizenshipVisa" value="UK Citizen">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">UK Citizen</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="citizenshipVisa" value="Visa: Other">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Visa: Other</span>
+                        </label>
+                    </div>
+                    <div class="reveal-wrap" id="citizenshipVisaOther-reveal">
+                        <label for="citizenshipVisaOther" class="reveal-label">If you selected Visa: Other, enter your visa type here</label>
+                        <input type="text" id="citizenshipVisaOther" name="citizenshipVisaOther" placeholder="Visa type…">
+                        <span class="err-msg" id="citizenshipVisaOther-err"></span>
+                    </div>
+                    <span class="err-msg section-err" id="citizenshipVisa-err"></span>
+                </div>
+
+            </section>
+
+            <!-- PAGE 3 FOOTER — SUBMIT -->
             <div class="form-footer">
                 <p class="required-note">Complete all sections, then submit your registration.</p>
                 <div class="footer-actions">
-                    <button type="button" class="back-page-btn" id="back-btn">
+                    <button type="button" class="back-page-btn" id="back-btn-3">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                             <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
@@ -819,7 +1033,7 @@
             </div>
 
         </div>
-        <!-- END PAGE 2 -->
+        <!-- END PAGE 3 -->
 
         <!-- SUCCESS STATE -->
         <div class="success-state" id="success-state">

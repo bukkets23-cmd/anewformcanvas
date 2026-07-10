@@ -11,7 +11,7 @@ const STORAGE_KEY = `gcsp_registration_${classYear}`;
 
 // ── PAGE STATE ────────────────────────────────────────────────────────────────
 let currentPage = 1;
-const TOTAL_PAGES = 2;
+const TOTAL_PAGES = 3;
 
 function showPage(n) {
     document.querySelectorAll('.form-page').forEach((el, i) => {
@@ -23,6 +23,7 @@ function showPage(n) {
     const subtitles = {
         1: 'Page 1 — Complete all fields to continue.',
         2: 'Page 2 — Almost there.',
+        3: 'Page 3 — Final stretch.',
     };
     document.getElementById('page-subtitle').textContent = subtitles[n] || `Page ${n}`;
     currentPage = n;
@@ -30,7 +31,8 @@ function showPage(n) {
     updateProgress();
 }
 
-document.getElementById('back-btn')?.addEventListener('click', () => showPage(1));
+document.getElementById('back-btn-2')?.addEventListener('click', () => showPage(1));
+document.getElementById('back-btn-3')?.addEventListener('click', () => showPage(2));
 
 
 // ── PHONE FORMATTING ──────────────────────────────────────────────────────────
@@ -55,20 +57,21 @@ function saveFormData() {
         document.querySelectorAll(
             '#page-1 input[type="text"], #page-1 input[type="email"], #page-1 input[type="tel"], ' +
             '#page-1 input[type="date"], #page-1 input[type="url"], #page-1 select, ' +
-            '#page-2 input[type="text"], #page-2 select'
+            '#page-2 input[type="text"], #page-2 select, ' +
+            '#page-3 input[type="text"], #page-3 select'
         ).forEach(el => {
             if (el.id) data.text[el.id] = el.value;
         });
 
         const radioNames = new Set();
-        document.querySelectorAll('#page-1 input[type="radio"], #page-2 input[type="radio"]').forEach(el => radioNames.add(el.name));
+        document.querySelectorAll('#page-1 input[type="radio"], #page-2 input[type="radio"], #page-3 input[type="radio"]').forEach(el => radioNames.add(el.name));
         radioNames.forEach(name => {
             const checked = document.querySelector(`input[name="${name}"]:checked`);
             if (checked) data.radio[name] = checked.value;
         });
 
         const checkboxNames = new Set();
-        document.querySelectorAll('#page-1 input[type="checkbox"], #page-2 input[type="checkbox"]').forEach(el => checkboxNames.add(el.name));
+        document.querySelectorAll('#page-1 input[type="checkbox"], #page-2 input[type="checkbox"], #page-3 input[type="checkbox"]').forEach(el => checkboxNames.add(el.name));
         checkboxNames.forEach(name => {
             data.checkbox[name] = [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(cb => cb.value);
         });
@@ -92,7 +95,7 @@ function restoreFormData() {
     });
 
     // Fire "change" on selects so conditional "Other" reveals show correctly
-    document.querySelectorAll('#page-1 select, #page-2 select').forEach(el => {
+    document.querySelectorAll('#page-1 select, #page-2 select, #page-3 select').forEach(el => {
         if (el.value) el.dispatchEvent(new Event('change'));
     });
 
@@ -124,7 +127,7 @@ function debouncedSave() {
     _saveTimer = setTimeout(saveFormData, 400);
 }
 
-document.querySelectorAll('#page-1 input, #page-1 select, #page-2 input, #page-2 select').forEach(el => {
+document.querySelectorAll('#page-1 input, #page-1 select, #page-2 input, #page-2 select, #page-3 input, #page-3 select').forEach(el => {
     el.addEventListener('change', debouncedSave);
     el.addEventListener('input', debouncedSave);
 });
@@ -249,6 +252,39 @@ wireOtherReveal('firmName', 'firmName-reveal', 'firmNameOther', 'firmNameOther-e
 wireOtherReveal('officeLocation', 'officeLocation-reveal', 'officeLocationOther', 'officeLocationOther-err');
 wireOtherReveal('undergradInstitution', 'undergradInstitution-reveal', 'undergradInstitutionOther', 'undergradInstitutionOther-err', 'Other');
 
+// Ethnicity checkboxes: clear error on any change
+document.querySelectorAll('input[name="ethnicityBg"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+        document.getElementById('ethnicityBg-err').textContent = '';
+        document.getElementById('s-background')?.classList.remove('has-error');
+        updateProgress();
+    });
+});
+
+// Citizenship/Visa: clear error on any change
+document.querySelectorAll('input[name="citizenshipVisa"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+        document.getElementById('citizenshipVisa-err').textContent = '';
+        document.getElementById('s-background')?.classList.remove('has-error');
+        updateProgress();
+    });
+});
+
+// Citizenship/Visa: show a text box when "Visa: Other" is checked
+document.querySelector('input[name="citizenshipVisa"][value="Visa: Other"]')?.addEventListener('change', function () {
+    const reveal = document.getElementById('citizenshipVisaOther-reveal');
+    const otherInput = document.getElementById('citizenshipVisaOther');
+    if (this.checked) {
+        reveal.classList.add('visible');
+        otherInput.focus();
+    } else {
+        reveal.classList.remove('visible');
+        otherInput.value = '';
+        otherInput.classList.remove('has-error');
+        document.getElementById('citizenshipVisaOther-err').textContent = '';
+    }
+});
+
 
 // ── PROGRESS ─────────────────────────────────────────────────────────────────
 // Counts required fields on the current page only (progress bar scoped per page)
@@ -294,14 +330,27 @@ function countPage2Filled() {
 
 const PAGE2_TOTAL = 9;
 
+function countPage3Filled() {
+    let n = 0;
+
+    if (document.querySelectorAll('input[name="ethnicityBg"]:checked').length) n++;
+    if (document.querySelectorAll('input[name="citizenshipVisa"]:checked').length) n++;
+
+    return n;
+}
+
+const PAGE3_TOTAL = 2;
+
 function updateProgress() {
-    const filled = currentPage === 2 ? countPage2Filled() : countPage1Filled();
-    const total  = currentPage === 2 ? PAGE2_TOTAL : PAGE1_TOTAL;
+    const counters = { 1: countPage1Filled, 2: countPage2Filled, 3: countPage3Filled };
+    const totals   = { 1: PAGE1_TOTAL,      2: PAGE2_TOTAL,      3: PAGE3_TOTAL };
+    const filled = (counters[currentPage] || countPage1Filled)();
+    const total  = totals[currentPage] || PAGE1_TOTAL;
     const pct = Math.round((filled / total) * 100);
     document.getElementById('completion-fill').style.width = Math.min(pct, 100) + '%';
 }
 
-document.querySelectorAll('#page-1 input, #page-1 select, #page-2 input, #page-2 select').forEach(el => {
+document.querySelectorAll('#page-1 input, #page-1 select, #page-2 input, #page-2 select, #page-3 input, #page-3 select').forEach(el => {
     el.addEventListener('change', updateProgress);
     el.addEventListener('input', updateProgress);
 });
@@ -331,10 +380,10 @@ function clearInputError(el) {
 }
 
 // Live clear on typing
-document.querySelectorAll('#page-1 input[type="text"], #page-1 input[type="email"], #page-1 input[type="tel"], #page-1 input[type="date"], #page-2 input[type="text"]').forEach(el => {
+document.querySelectorAll('#page-1 input[type="text"], #page-1 input[type="email"], #page-1 input[type="tel"], #page-1 input[type="date"], #page-2 input[type="text"], #page-3 input[type="text"]').forEach(el => {
     el.addEventListener('input', () => clearInputError(el));
 });
-document.querySelectorAll('#page-1 select, #page-2 select').forEach(el => {
+document.querySelectorAll('#page-1 select, #page-2 select, #page-3 select').forEach(el => {
     el.addEventListener('change', () => {
         el.classList.remove('has-error');
         const errEl = document.getElementById(el.id + '-err');
@@ -568,6 +617,40 @@ function validatePage2() {
     return ok;
 }
 
+function validatePage3() {
+    // Clear all page 3 errors first
+    document.querySelectorAll('#page-3 .err-msg').forEach(el => el.textContent = '');
+    document.querySelectorAll('#page-3 input').forEach(el => el.classList.remove('has-error', 'is-valid'));
+    document.querySelectorAll('#page-3 .form-section').forEach(el => el.classList.remove('has-error'));
+
+    let ok = true;
+
+    // Ethnicity — at least one checkbox
+    if (!document.querySelectorAll('input[name="ethnicityBg"]:checked').length) {
+        document.getElementById('ethnicityBg-err').textContent = 'Please select at least one option.';
+        document.getElementById('s-background').classList.add('has-error');
+        ok = false;
+    }
+
+    // Citizenship/Visa — at least one checkbox
+    const citizenshipChecked = document.querySelectorAll('input[name="citizenshipVisa"]:checked');
+    if (!citizenshipChecked.length) {
+        document.getElementById('citizenshipVisa-err').textContent = 'Please select at least one option.';
+        document.getElementById('s-background').classList.add('has-error');
+        ok = false;
+    } else if ([...citizenshipChecked].some(cb => cb.value === 'Visa: Other')) {
+        const otherInput = document.getElementById('citizenshipVisaOther');
+        if (!otherInput.value.trim()) {
+            otherInput.classList.add('has-error');
+            document.getElementById('citizenshipVisaOther-err').textContent = 'Please enter your visa type.';
+            document.getElementById('s-background').classList.add('has-error');
+            ok = false;
+        }
+    }
+
+    return ok;
+}
+
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
 
@@ -580,12 +663,21 @@ document.getElementById('next-btn')?.addEventListener('click', () => {
     showPage(2);
 });
 
+document.getElementById('next-btn-2')?.addEventListener('click', () => {
+    if (!validatePage2()) {
+        document.querySelector('#page-2 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+    saveFormData();
+    showPage(3);
+});
+
 
 // ── SUBMIT ────────────────────────────────────────────────────────────────────
 
 document.getElementById('submit-btn')?.addEventListener('click', () => {
-    if (!validatePage2()) {
-        document.querySelector('#page-2 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (!validatePage3()) {
+        document.querySelector('#page-3 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
 
@@ -595,7 +687,7 @@ document.getElementById('submit-btn')?.addEventListener('click', () => {
 
     setTimeout(() => {
         try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
-        document.getElementById('page-2').style.display = 'none';
+        document.getElementById('page-3').style.display = 'none';
         document.querySelector('.reg-title-block').style.display = 'none';
         document.querySelector('.step-track').style.display = 'none';
         document.querySelector('.completion-bar').style.display = 'none';
