@@ -395,12 +395,11 @@ function countPage4Filled() {
     if (document.getElementById('geoPref2')?.value) n++;
     if (document.getElementById('geoPref3')?.value) n++;
     if (document.querySelectorAll('input[name="verticalInterests"]:checked').length) n++;
-    if (document.getElementById('buysideDetails')?.value.trim()) n++;
 
     return n;
 }
 
-const PAGE4_TOTAL = 7;
+const PAGE4_TOTAL = 6;
 
 function updateProgress() {
     const counters = { 1: countPage1Filled, 2: countPage2Filled, 3: countPage3Filled, 4: countPage4Filled };
@@ -786,15 +785,6 @@ function validatePage4() {
     // Vertical interests — at least one checkbox
     if (!document.querySelectorAll('input[name="verticalInterests"]:checked').length) {
         document.getElementById('verticalInterests-err').textContent = 'Please select at least one option.';
-        document.getElementById('s-search-interests').classList.add('has-error');
-        ok = false;
-    }
-
-    // Buyside conversations
-    const buysideEl = document.getElementById('buysideDetails');
-    if (!buysideEl.value.trim()) {
-        buysideEl.classList.add('has-error');
-        document.getElementById('buysideDetails-err').textContent = 'Please provide details, or enter N/A.';
         document.getElementById('s-search-interests').classList.add('has-error');
         ok = false;
     }
