@@ -528,6 +528,274 @@
                     <span class="err-msg" id="mastersGradYear-err"></span>
                 </div>
 
+                <!-- Undergraduate Institution -->
+                <!-- TODO: Replace option list below with values from "Form Undergrad Institutions Choices" images I–VII -->
+                <div class="question-block" id="qb-undergradInstitution">
+                    <label for="undergradInstitution" class="question-text">Undergraduate Institution<span class="required-mark">*</span></label>
+                    <div class="select-wrap">
+                        <select id="undergradInstitution" name="undergradInstitution" required>
+                            <option value="" disabled selected>Select institution…</option>
+                            <option>Amherst College</option>
+                            <option>Arizona State University</option>
+                            <option>Baylor University</option>
+                            <option>Boston College</option>
+                            <option>Boston University</option>
+                            <option>Bowdoin College</option>
+                            <option>Brigham Young University</option>
+                            <option>Brown University</option>
+                            <option>California Institute of Technology</option>
+                            <option>Carleton College</option>
+                            <option>Carnegie Mellon University</option>
+                            <option>Case Western Reserve University</option>
+                            <option>Claremont McKenna</option>
+                            <option>Colgate University</option>
+                            <option>Columbia University</option>
+                            <option>Cornell University</option>
+                            <option>Dartmouth College</option>
+                            <option>Davidson College</option>
+                            <option>Drexel University</option>
+                            <option>Duke University</option>
+                            <option>Emory University</option>
+                            <option>Florida A&amp;M University</option>
+                            <option>Florida State University</option>
+                            <option>George Mason University</option>
+                            <option>George Washington University</option>
+                            <option>Georgetown University</option>
+                            <option>Georgia Institute of Technology</option>
+                            <option>Harvard University</option>
+                            <option>Haverford College</option>
+                            <option>Howard University</option>
+                            <option>Imperial College London</option>
+                            <option>Indiana University</option>
+                            <option>Iowa State University</option>
+                            <option>Johns Hopkins University</option>
+                            <option>London School of Economics and Political Science</option>
+                            <option>Massachusetts Institute of Technology</option>
+                            <option>McGill University</option>
+                            <option>Middlebury College</option>
+                            <option>Morehouse College</option>
+                            <option>New York University</option>
+                            <option>North Carolina State University</option>
+                            <option>Northeastern University</option>
+                            <option>Northwestern University</option>
+                            <option>Ohio State University</option>
+                            <option>Other</option>
+                            <option>Oxford University</option>
+                            <option>Pennsylvania State University</option>
+                            <option>Pomona College</option>
+                            <option>Princeton University</option>
+                            <option>Purdue University</option>
+                            <option>Queen's University</option>
+                            <option>Rensselaer Polytechnic Institute</option>
+                            <option>Rice University</option>
+                            <option>Rutgers State University</option>
+                            <option>Santa Clara University</option>
+                            <option>Southern Methodist University</option>
+                            <option>Spelman College</option>
+                            <option>Stanford University</option>
+                            <option>Swarthmore College</option>
+                            <option>Syracuse University</option>
+                            <option>Temple University</option>
+                            <option>Texas A&amp;M University</option>
+                            <option>Texas Tech University</option>
+                            <option>Tufts University</option>
+                            <option>Tulane University</option>
+                            <option>University of Alabama</option>
+                            <option>University of Arizona</option>
+                            <option>University of California--Berkeley</option>
+                            <option>University of California--Los Angeles</option>
+                            <option>University of California--San Diego</option>
+                            <option>University of Cambridge</option>
+                            <option>University of Chicago</option>
+                            <option>University of Colorado</option>
+                            <option>University of Delaware</option>
+                            <option>University of Florida</option>
+                            <option>University of Illinois</option>
+                            <option>University of Iowa</option>
+                            <option>University of Maryland--College Park</option>
+                            <option>University of Massachusetts--Amherst</option>
+                            <option>University of Michigan</option>
+                            <option>University of Minnesota</option>
+                            <option>University of Nebraska</option>
+                            <option>University of North Carolina--Chapel Hill</option>
+                            <option>University of Notre Dame</option>
+                            <option>University of Pennsylvania</option>
+                            <option>University of Pittsburgh</option>
+                            <option>University of South Carolina</option>
+                            <option>University of Southern California</option>
+                            <option>University of Texas--Austin</option>
+                            <option>University of Utah</option>
+                            <option>University of Virginia</option>
+                            <option>University of Waterloo</option>
+                            <option>University of Western Ontario</option>
+                            <option>University of Wisconsin--Madison</option>
+                            <option>Vanderbilt University</option>
+                            <option>Villanova University</option>
+                            <option>Virginia Tech</option>
+                            <option>Wake Forest University</option>
+                            <option>Washington and Lee University</option>
+                            <option>Washington University in St. Louis</option>
+                            <option>Wellesley College</option>
+                            <option>Wesleyan University</option>
+                            <option>Williams College</option>
+                            <option>Yale University</option>
+                        </select>
+                        <span class="select-arrow" aria-hidden="true">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <span class="err-msg" id="undergradInstitution-err"></span>
+                    <div class="reveal-wrap" id="undergradInstitution-reveal">
+                        <label for="undergradInstitutionOther" class="reveal-label">If you selected Other, enter your undergraduate institution here</label>
+                        <input type="text" id="undergradInstitutionOther" name="undergradInstitutionOther" placeholder="Undergraduate institution…">
+                        <span class="err-msg" id="undergradInstitutionOther-err"></span>
+                    </div>
+                </div>
+
+                <!-- GPA -->
+                <div class="question-block" id="qb-gpa">
+                    <label for="gpa" class="question-text">Please enter your current GPA/4.0. If you are on a 5.0 or % scale, please convert to a 4.0 scale.<span class="required-mark">*</span></label>
+                    <input type="text" id="gpa" name="gpa" placeholder="e.g., 3.75" required>
+                    <span class="err-msg" id="gpa-err"></span>
+                </div>
+
+                <!-- Investing club / student endowment -->
+                <div class="question-block" id="qb-investingClub">
+                    <p class="question-text">During college, did you participate in an on campus investing club or student endowment? If yes, please include the name of the organization and your position.<span class="required-mark">*</span></p>
+                    <div class="radio-group" id="rg-investingClub">
+                        <label class="radio-item">
+                            <input type="radio" name="investingClub" value="No" required>
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">No</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="investingClub" value="Yes">
+                            <span class="radio-dot"></span>
+                            <span class="radio-text">Yes</span>
+                        </label>
+                    </div>
+                    <div class="reveal-wrap" id="investingClub-reveal">
+                        <input type="text" id="investingClubOrg" placeholder="Organization name and your position…">
+                        <span class="err-msg" id="investingClubOrg-err"></span>
+                    </div>
+                    <span class="err-msg section-err" id="investingClub-err"></span>
+                </div>
+
+                <!-- Varsity College Athletics (not required) -->
+                <div class="question-block" id="qb-athletics">
+                    <p class="question-text">Varsity College Athletics</p>
+                    <div class="checkbox-grid three-col" id="cg-athletics">
+                        <label class="cb-item">
+                            <input type="checkbox" name="athletics" value="Baseball">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Baseball</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="athletics" value="Basketball">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Basketball</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="athletics" value="Field Hockey">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Field Hockey</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="athletics" value="Football">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Football</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="athletics" value="Ice Hockey">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Ice Hockey</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="athletics" value="Lacrosse">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Lacrosse</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="athletics" value="Rowing">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Rowing</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="athletics" value="Soccer">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Soccer</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="athletics" value="Squash">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Squash</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="athletics" value="Swimming &amp; Diving">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Swimming &amp; Diving</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="athletics" value="Tennis">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Tennis</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="athletics" value="Track &amp; Field">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Track &amp; Field</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="athletics" value="Volleyball">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Volleyball</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="athletics" value="Water Polo">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Water Polo</span>
+                        </label>
+                        <label class="cb-item">
+                            <input type="checkbox" name="athletics" value="Other">
+                            <span class="cb-box"></span>
+                            <span class="cb-text">Other</span>
+                        </label>
+                    </div>
+                    <span class="err-msg"></span>
+                </div>
+
+            </section>
+
+            <!-- 02 TEST SCORES -->
+            <section class="form-section" id="s-testscores">
+                <div class="section-label">
+                    <span class="section-num">02</span>
+                    <h2 class="section-title">Test Scores (please put N/A if you didn't take)</h2>
+                </div>
+                <div class="fields-grid two-col">
+                    <div class="field-wrap">
+                        <label for="satMath">SAT Math<span class="required-mark">*</span></label>
+                        <input type="text" id="satMath" name="satMath" placeholder="e.g., 720 or N/A" required>
+                        <span class="err-msg"></span>
+                    </div>
+                    <div class="field-wrap">
+                        <label for="satVerbal">SAT Verbal<span class="required-mark">*</span></label>
+                        <input type="text" id="satVerbal" name="satVerbal" placeholder="e.g., 710 or N/A" required>
+                        <span class="err-msg"></span>
+                    </div>
+                    <div class="field-wrap">
+                        <label for="actScore">ACT<span class="required-mark">*</span></label>
+                        <input type="text" id="actScore" name="actScore" placeholder="e.g., 33 or N/A" required>
+                        <span class="err-msg"></span>
+                    </div>
+                    <div class="field-wrap">
+                        <label for="gmat">GMAT</label>
+                        <input type="text" id="gmat" name="gmat" placeholder="e.g., 720 or N/A">
+                        <span class="err-msg"></span>
+                    </div>
+                </div>
             </section>
 
             <!-- PAGE 2 FOOTER — SUBMIT -->

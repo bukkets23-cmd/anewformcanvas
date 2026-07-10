@@ -117,13 +117,32 @@ document.querySelectorAll('input[name="degree"]').forEach(cb => {
     });
 });
 
-// Firm / office location selects: show a text box when "Other (not listed)" is chosen
-function wireOtherReveal(selectId, revealId, otherInputId, otherErrId) {
+// Investing club / student endowment: show org input when "Yes" is selected
+document.querySelectorAll('input[name="investingClub"]').forEach(radio => {
+    radio.addEventListener('change', function () {
+        const reveal = document.getElementById('investingClub-reveal');
+        const orgInput = document.getElementById('investingClubOrg');
+        if (this.value === 'Yes') {
+            reveal.classList.add('visible');
+            orgInput.focus();
+        } else {
+            reveal.classList.remove('visible');
+            orgInput.value = '';
+            orgInput.classList.remove('has-error');
+            document.getElementById('investingClubOrg-err').textContent = '';
+        }
+        clearSectionError('investingClub');
+        updateProgress();
+    });
+});
+
+// Selects with an "Other" option: show a text box when it's chosen
+function wireOtherReveal(selectId, revealId, otherInputId, otherErrId, otherValue = 'Other (not listed)') {
     const select = document.getElementById(selectId);
     select?.addEventListener('change', function () {
         const reveal = document.getElementById(revealId);
         const otherInput = document.getElementById(otherInputId);
-        if (this.value === 'Other (not listed)') {
+        if (this.value === otherValue) {
             reveal.classList.add('visible');
             otherInput.focus();
         } else {
@@ -136,6 +155,7 @@ function wireOtherReveal(selectId, revealId, otherInputId, otherErrId) {
 }
 wireOtherReveal('firmName', 'firmName-reveal', 'firmNameOther', 'firmNameOther-err');
 wireOtherReveal('officeLocation', 'officeLocation-reveal', 'officeLocationOther', 'officeLocationOther-err');
+wireOtherReveal('undergradInstitution', 'undergradInstitution-reveal', 'undergradInstitutionOther', 'undergradInstitutionOther-err', 'Other');
 
 
 // ── PROGRESS ─────────────────────────────────────────────────────────────────
@@ -170,11 +190,17 @@ function countPage2Filled() {
     if (document.querySelector('input[name="degree"]:checked')) n++;
     if (document.getElementById('undergradYear')?.value) n++;
     if (document.querySelector('input[name="gradTerm"]:checked')) n++;
+    if (document.getElementById('undergradInstitution')?.value) n++;
+    if (document.getElementById('gpa')?.value.trim()) n++;
+    if (document.querySelector('input[name="investingClub"]:checked')) n++;
+    if (document.getElementById('satMath')?.value.trim()) n++;
+    if (document.getElementById('satVerbal')?.value.trim()) n++;
+    if (document.getElementById('actScore')?.value.trim()) n++;
 
     return n;
 }
 
-const PAGE2_TOTAL = 3;
+const PAGE2_TOTAL = 9;
 
 function updateProgress() {
     const filled = currentPage === 2 ? countPage2Filled() : countPage1Filled();
@@ -374,6 +400,64 @@ function validatePage2() {
             ok = false;
         }
     }
+
+    // Undergraduate Institution
+    const undergradInstitutionEl = document.getElementById('undergradInstitution');
+    if (!undergradInstitutionEl.value) {
+        undergradInstitutionEl.classList.add('has-error');
+        document.getElementById('undergradInstitution-err').textContent = 'Please make a selection.';
+        document.getElementById('s-education').classList.add('has-error');
+        ok = false;
+    } else if (undergradInstitutionEl.value === 'Other') {
+        const otherInput = document.getElementById('undergradInstitutionOther');
+        if (!otherInput.value.trim()) {
+            otherInput.classList.add('has-error');
+            document.getElementById('undergradInstitutionOther-err').textContent = 'Please enter your undergraduate institution.';
+            document.getElementById('s-education').classList.add('has-error');
+            ok = false;
+        }
+    }
+
+    // GPA
+    const gpaEl = document.getElementById('gpa');
+    if (!gpaEl.value.trim()) {
+        gpaEl.classList.add('has-error');
+        document.getElementById('gpa-err').textContent = 'Please enter your GPA.';
+        document.getElementById('s-education').classList.add('has-error');
+        ok = false;
+    }
+
+    // Investing club / student endowment
+    const investingClubChecked = document.querySelector('input[name="investingClub"]:checked');
+    if (!investingClubChecked) {
+        document.getElementById('investingClub-err').textContent = 'Please select an option.';
+        document.getElementById('s-education').classList.add('has-error');
+        ok = false;
+    } else if (investingClubChecked.value === 'Yes') {
+        const orgInput = document.getElementById('investingClubOrg');
+        if (!orgInput.value.trim()) {
+            orgInput.classList.add('has-error');
+            document.getElementById('investingClubOrg-err').textContent = 'Please list the organization and your position.';
+            document.getElementById('s-education').classList.add('has-error');
+            ok = false;
+        }
+    }
+
+    // Test scores
+    [
+        { id: 'satMath',   label: 'SAT Math'   },
+        { id: 'satVerbal', label: 'SAT Verbal' },
+        { id: 'actScore',  label: 'ACT'        },
+    ].forEach(({ id, label }) => {
+        const el = document.getElementById(id);
+        if (!el.value.trim()) {
+            el.classList.add('has-error');
+            const errEl = el.nextElementSibling;
+            if (errEl?.classList.contains('err-msg')) errEl.textContent = `${label} is required.`;
+            document.getElementById('s-testscores').classList.add('has-error');
+            ok = false;
+        }
+    });
 
     return ok;
 }

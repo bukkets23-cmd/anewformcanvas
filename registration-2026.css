@@ -177,6 +177,32 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     color: var(--gray-600);
 }
 
+/* Bare text input placed directly under a question-text label (e.g., GPA) */
+.question-block > input[type="text"] {
+    height: 44px;
+    padding: 0 14px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--gray-800);
+    background: var(--white);
+    outline: none;
+    width: 100%;
+    max-width: 320px;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.question-block > input[type="text"]:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+}
+
+.question-block > input[type="text"].has-error {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.10);
+}
+
 
 /* ── RADIO GROUP ── */
 .radio-group {
