@@ -88,6 +88,26 @@ document.querySelectorAll('input[name="renewables"]').forEach(radio => {
     });
 });
 
+// Firm / office location selects: show a text box when "Other (not listed)" is chosen
+function wireOtherReveal(selectId, revealId, otherInputId, otherErrId) {
+    const select = document.getElementById(selectId);
+    select?.addEventListener('change', function () {
+        const reveal = document.getElementById(revealId);
+        const otherInput = document.getElementById(otherInputId);
+        if (this.value === 'Other (not listed)') {
+            reveal.classList.add('visible');
+            otherInput.focus();
+        } else {
+            reveal.classList.remove('visible');
+            otherInput.value = '';
+            otherInput.classList.remove('has-error');
+            document.getElementById(otherErrId).textContent = '';
+        }
+    });
+}
+wireOtherReveal('firmName', 'firmName-reveal', 'firmNameOther', 'firmNameOther-err');
+wireOtherReveal('officeLocation', 'officeLocation-reveal', 'officeLocationOther', 'officeLocationOther-err');
+
 
 // ── PROGRESS ─────────────────────────────────────────────────────────────────
 // Counts Page 1 required fields only (progress bar scoped to current page)
@@ -210,6 +230,23 @@ function validatePage1() {
             if (errEl) errEl.textContent = 'Please make a selection.';
             el.closest('.form-section')?.classList.add('has-error');
             ok = false;
+        }
+    });
+
+    // "Other" reveal text boxes — required only when "Other (not listed)" is selected
+    [
+        { selectId: 'firmName',       otherInputId: 'firmNameOther',       otherErrId: 'firmNameOther-err',       label: 'firm' },
+        { selectId: 'officeLocation', otherInputId: 'officeLocationOther', otherErrId: 'officeLocationOther-err', label: 'office location' },
+    ].forEach(({ selectId, otherInputId, otherErrId, label }) => {
+        const selectEl = document.getElementById(selectId);
+        if (selectEl.value === 'Other (not listed)') {
+            const otherInput = document.getElementById(otherInputId);
+            if (!otherInput.value.trim()) {
+                otherInput.classList.add('has-error');
+                document.getElementById(otherErrId).textContent = `Please enter your ${label}.`;
+                selectEl.closest('.form-section')?.classList.add('has-error');
+                ok = false;
+            }
         }
     });
 

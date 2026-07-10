@@ -65,36 +65,52 @@
                 <span class="page-pip" id="pip-2"></span>
             </div>
             <p class="reg-subtitle" id="page-subtitle">Page 1 — Complete all fields to continue.</p>
+            <p class="required-legend">Fields marked with <span class="required-mark">*</span> are required.</p>
         </div>
 
         <!-- ═══════════════════════════════════════════════════════════ PAGE 1 -->
         <div id="page-1" class="form-page">
 
-            <!-- 01 CONTACT INFORMATION -->
+            <!-- 01 CANDIDATE INFORMATION -->
             <section class="form-section" id="s-contact">
                 <div class="section-label">
                     <span class="section-num">01</span>
-                    <h2 class="section-title">Contact Information</h2>
+                    <h2 class="section-title">Candidate Information</h2>
                 </div>
                 <div class="fields-grid two-col">
                     <div class="field-wrap">
-                        <label for="firstName">First Name</label>
+                        <label for="firstName">First Name<span class="required-mark">*</span></label>
                         <input type="text" id="firstName" name="firstName" placeholder="First name" autocomplete="given-name" required>
                         <span class="err-msg"></span>
                     </div>
                     <div class="field-wrap">
-                        <label for="lastName">Last Name</label>
+                        <label for="lastName">Last Name<span class="required-mark">*</span></label>
                         <input type="text" id="lastName" name="lastName" placeholder="Last name" autocomplete="family-name" required>
                         <span class="err-msg"></span>
                     </div>
                     <div class="field-wrap">
-                        <label for="regEmail">Personal Email Address</label>
+                        <label for="nickname">Nickname/Preferred Name</label>
+                        <input type="text" id="nickname" name="nickname" placeholder="Nickname/Preferred name" autocomplete="nickname">
+                        <span class="err-msg"></span>
+                    </div>
+                    <div class="field-wrap">
+                        <label for="regEmail">Personal Email Address<span class="required-mark">*</span></label>
                         <input type="email" id="regEmail" name="regEmail" placeholder="you@example.com" autocomplete="email" required>
                         <span class="err-msg"></span>
                     </div>
                     <div class="field-wrap">
-                        <label for="regPhone">Mobile Phone Number</label>
+                        <label for="schoolEmail">School Email Address</label>
+                        <input type="email" id="schoolEmail" name="schoolEmail" placeholder="you@university.edu" autocomplete="email">
+                        <span class="err-msg"></span>
+                    </div>
+                    <div class="field-wrap">
+                        <label for="regPhone">Mobile Phone Number<span class="required-mark">*</span></label>
                         <input type="tel" id="regPhone" name="regPhone" placeholder="(555) 000-0000" autocomplete="tel" required>
+                        <span class="err-msg"></span>
+                    </div>
+                    <div class="field-wrap">
+                        <label for="linkedinUrl">LinkedIn URL</label>
+                        <input type="url" id="linkedinUrl" name="linkedinUrl" placeholder="https://www.linkedin.com/in/yourname" autocomplete="url">
                         <span class="err-msg"></span>
                     </div>
                 </div>
@@ -111,7 +127,7 @@
                     <!-- Bank / Firm dropdown -->
                     <!-- TODO: Replace option list below with values from "Firm Drop Down Choices" images I–IV -->
                     <div class="field-wrap">
-                        <label for="firmName">Full Time Bank / Firm</label>
+                        <label for="firmName">Full Time Bank / Firm<span class="required-mark">*</span></label>
                         <div class="select-wrap">
                             <select id="firmName" name="firmName" required>
                                 <option value="" disabled selected>Select firm…</option>
@@ -183,11 +199,16 @@
                             </span>
                         </div>
                         <span class="err-msg" id="firmName-err"></span>
+                        <div class="reveal-wrap" id="firmName-reveal">
+                            <label for="firmNameOther" class="reveal-label">If you selected Other, enter your firm here</label>
+                            <input type="text" id="firmNameOther" name="firmNameOther" placeholder="Firm name…">
+                            <span class="err-msg" id="firmNameOther-err"></span>
+                        </div>
                     </div>
 
                     <!-- Vertical / Group -->
                     <div class="field-wrap">
-                        <label for="vertical2026">Vertical / Group</label>
+                        <label for="vertical2026">Vertical / Group<span class="required-mark">*</span></label>
                         <input type="text" id="vertical2026" name="vertical2026"
                             placeholder="Group placement — type TBD if not yet assigned" required>
                         <span class="field-hint">If you have not received your group placement, please put "TBD".</span>
@@ -197,7 +218,7 @@
                     <!-- Full Time Office Location -->
                     <!-- TODO: Replace option list below with values from "Full Time Office Location Dropdown" image -->
                     <div class="field-wrap">
-                        <label for="officeLocation">Full Time Office Location</label>
+                        <label for="officeLocation">Full Time Office Location<span class="required-mark">*</span></label>
                         <div class="select-wrap">
                             <select id="officeLocation" name="officeLocation" required>
                                 <option value="" disabled selected>Select office location…</option>
@@ -243,18 +264,23 @@
                             </span>
                         </div>
                         <span class="err-msg" id="officeLocation-err"></span>
+                        <div class="reveal-wrap" id="officeLocation-reveal">
+                            <label for="officeLocationOther" class="reveal-label">If you selected Other, enter your office location here</label>
+                            <input type="text" id="officeLocationOther" name="officeLocationOther" placeholder="Office location…">
+                            <span class="err-msg" id="officeLocationOther-err"></span>
+                        </div>
                     </div>
 
                     <!-- Start Date -->
                     <div class="field-wrap">
-                        <label for="startDate">Analyst Program Start Date</label>
+                        <label for="startDate">Analyst Program Start Date<span class="required-mark">*</span></label>
                         <input type="date" id="startDate" name="startDate" required>
                         <span class="err-msg"></span>
                     </div>
 
                     <!-- Position -->
                     <div class="field-wrap">
-                        <label for="position">Position at Start Date</label>
+                        <label for="position">Position at Start Date<span class="required-mark">*</span></label>
                         <div class="select-wrap">
                             <select id="position" name="position" required>
                                 <option value="" disabled selected>Select position…</option>
@@ -283,7 +309,7 @@
 
                 <!-- Q: Summer intern -->
                 <div class="question-block" id="qb-summer">
-                    <p class="question-text">Were you a summer intern at your current bank / firm?
+                    <p class="question-text">Were you a summer intern at your current bank / firm?<span class="required-mark">*</span>
                         <em>If no, please list the firm you completed your internship with below.</em>
                     </p>
                     <div class="radio-group" id="rg-summer">
@@ -312,7 +338,7 @@
 
                 <!-- Q: PE / GE / VC / credit / HF internship -->
                 <div class="question-block" id="qb-investing">
-                    <p class="question-text">Have you had a private equity, growth equity, venture capital, credit, or hedge fund investing internship?
+                    <p class="question-text">Have you had a private equity, growth equity, venture capital, credit, or hedge fund investing internship?<span class="required-mark">*</span>
                         <em>If yes, please list the firm below.</em>
                     </p>
                     <div class="radio-group" id="rg-investing">
@@ -344,7 +370,7 @@
                 </div>
 
                 <div class="question-block">
-                    <p class="question-text">Renewables Experience — Please select the option that best applies to you.</p>
+                    <p class="question-text">Renewables Experience — Please select the option that best applies to you.<span class="required-mark">*</span></p>
                     <div class="radio-group stacked" id="rg-renewables">
                         <label class="radio-item wide">
                             <input type="radio" name="renewables" value="I have renewables experience from my summer internship" required>

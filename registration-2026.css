@@ -136,6 +136,20 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 
 
+/* ── REQUIRED / OPTIONAL INDICATORS ── */
+.required-mark {
+    color: var(--error);
+    margin-left: 3px;
+    font-weight: 700;
+}
+
+.required-legend {
+    font-size: 0.78rem;
+    color: var(--gray-400);
+    margin-top: 6px;
+}
+
+
 /* ── QUESTION BLOCK ── */
 .question-block {
     margin-bottom: 32px;
@@ -240,6 +254,12 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     margin-top: 12px;
     flex-direction: column;
     gap: 5px;
+}
+
+.reveal-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--gray-600);
 }
 
 .reveal-wrap.visible {
