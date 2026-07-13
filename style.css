@@ -508,7 +508,7 @@ body {
     max-width: 380px;
     margin-left: auto;
     margin-right: auto;
-    word-break: break-all;
+    overflow-wrap: break-word;
 }
 
 .file-chosen.visible {
