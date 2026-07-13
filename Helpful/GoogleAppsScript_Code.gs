@@ -12,6 +12,8 @@
 
 const SPREADSHEET_ID = '1xnQbzweYbNtChbNyD7ZJs0lJjhSWzUY6RhdVMy5rXOo';
 const SHEET_NAME = 'Registrations';
+const DUPLICATE_FLAG_HEADER = 'Duplicate Override';
+const DUPLICATE_FLAG_COLOR = '#FFF3CD';
 
 function doPost(e) {
   const lock = LockService.getScriptLock();
@@ -24,14 +26,21 @@ function doPost(e) {
     const payload = JSON.parse(e.postData.contents);
     const row = payload.row;
     const force = !!payload.force;
-    const headers = Object.keys(row);
 
     if (sheet.getLastRow() === 0) {
-      sheet.appendRow(headers);
+      sheet.appendRow(Object.keys(row).concat([DUPLICATE_FLAG_HEADER]));
     }
 
-    const numCols = sheet.getLastColumn();
-    const existingHeaders = sheet.getRange(1, 1, 1, numCols).getValues()[0];
+    let numCols = sheet.getLastColumn();
+    let existingHeaders = sheet.getRange(1, 1, 1, numCols).getValues()[0];
+
+    // One-time migration for sheets created before this column existed.
+    if (existingHeaders.indexOf(DUPLICATE_FLAG_HEADER) === -1) {
+      sheet.getRange(1, numCols + 1).setValue(DUPLICATE_FLAG_HEADER);
+      existingHeaders = existingHeaders.concat([DUPLICATE_FLAG_HEADER]);
+      numCols += 1;
+    }
+
     const lastRow = sheet.getLastRow();
     const dataRows = lastRow > 1 ? sheet.getRange(2, 1, lastRow - 1, numCols).getValues() : [];
 
@@ -58,8 +67,19 @@ function doPost(e) {
       return jsonOutput({ duplicate: true, saved: false });
     }
 
-    const values = existingHeaders.map(h => (row[h] !== undefined ? row[h] : ''));
+    // Reaching here with duplicate === true means force === true (the
+    // !force case already returned above) — i.e. the user clicked
+    // "Submit anyway" on the warning modal. Flag and highlight that row
+    // so it's visually distinct from ordinary, non-duplicate records.
+    const values = existingHeaders.map(h => {
+      if (h === DUPLICATE_FLAG_HEADER) return duplicate ? 'Yes - submitted despite duplicate warning' : '';
+      return row[h] !== undefined ? row[h] : '';
+    });
     sheet.appendRow(values);
+
+    if (duplicate) {
+      sheet.getRange(sheet.getLastRow(), 1, 1, numCols).setBackground(DUPLICATE_FLAG_COLOR);
+    }
 
     return jsonOutput({ duplicate: duplicate, saved: true });
   } catch (err) {
