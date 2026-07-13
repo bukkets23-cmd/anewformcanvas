@@ -1061,7 +1061,9 @@ document.getElementById('next-btn-5')?.addEventListener('click', () => {
 // file handle is remembered in IndexedDB so repeated test submissions keep
 // appending to the SAME file without re-prompting each time. No backend —
 // this is strictly for verifying multi-submission behavior before a real
-// data pipeline is built.
+// data pipeline is built. Before appending, each submission is checked
+// against existing rows for a name+phone+email match (see DUPLICATE
+// DETECTION below) and the user is warned if one is found.
 
 const SUBMISSION_FIELDS = [
     // Page 1 — Candidate Information / Full Time Placement / Internship / Industry
@@ -1207,30 +1209,84 @@ async function getExcelFileHandle() {
     return handle;
 }
 
-async function appendRowToExcel(row) {
-    if (!('showSaveFilePicker' in window) || typeof XLSX === 'undefined') return;
-
-    const handle = await getExcelFileHandle();
+async function readExcelWorkbook(handle) {
     const file = await handle.getFile();
-    const headers = Object.keys(row);
+    if (file.size === 0) return { workbook: null, sheetName: null, existingRows: [] };
 
-    let workbook;
-    if (file.size > 0) {
-        const buffer = await file.arrayBuffer();
-        workbook = XLSX.read(buffer, { type: 'array' });
-        const sheetName = workbook.SheetNames[0];
-        const existingRows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
+    const buffer = await file.arrayBuffer();
+    const workbook = XLSX.read(buffer, { type: 'array' });
+    const sheetName = workbook.SheetNames[0];
+    const existingRows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
+    return { workbook, sheetName, existingRows };
+}
+
+function buildWorkbookWithRow(row, workbook, sheetName, existingRows) {
+    const headers = Object.keys(row);
+    if (workbook) {
         existingRows.push(row);
         workbook.Sheets[sheetName] = XLSX.utils.json_to_sheet(existingRows, { header: headers });
-    } else {
-        workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet([row], { header: headers }), 'Registrations');
+        return workbook;
     }
+    const newWorkbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(newWorkbook, XLSX.utils.json_to_sheet([row], { header: headers }), 'Registrations');
+    return newWorkbook;
+}
 
+async function saveWorkbook(handle, workbook) {
     const outBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
     const writable = await handle.createWritable();
     await writable.write(outBuffer);
     await writable.close();
+}
+
+// ── DUPLICATE DETECTION ────────────────────────────────────────────────────
+// Flags a submission as a duplicate only when full name, mobile phone, AND
+// personal email all match a row already in the Excel file — this is the
+// only record store this form controls, and it's what eventually gets
+// uploaded into Cluen, so catching duplicates here is what actually prevents
+// them downstream. Requiring all three (rather than just one) avoids false
+// positives from a single shared field (e.g. siblings on one phone line).
+
+function normalizeForMatch(str) {
+    return (str || '').trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+function normalizePhoneForMatch(str) {
+    return (str || '').replace(/\D/g, '');
+}
+
+function findDuplicateRow(newRow, existingRows) {
+    const newName = normalizeForMatch(`${newRow['First Name']} ${newRow['Last Name']}`);
+    const newPhone = normalizePhoneForMatch(newRow['Mobile Phone']);
+    const newEmail = normalizeForMatch(newRow['Personal Email']);
+    if (!newName || !newPhone || !newEmail) return null;
+
+    return existingRows.find(r => {
+        const name = normalizeForMatch(`${r['First Name']} ${r['Last Name']}`);
+        const phone = normalizePhoneForMatch(r['Mobile Phone']);
+        const email = normalizeForMatch(r['Personal Email']);
+        return name === newName && phone === newPhone && email === newEmail;
+    }) || null;
+}
+
+function showDuplicateWarning() {
+    const overlay = document.getElementById('dup-modal-overlay');
+    const cancelBtn = document.getElementById('dup-modal-cancel');
+    const confirmBtn = document.getElementById('dup-modal-confirm');
+    if (!overlay || !cancelBtn || !confirmBtn) return Promise.resolve(true);
+
+    return new Promise(resolve => {
+        const cleanup = () => {
+            overlay.classList.remove('visible');
+            cancelBtn.removeEventListener('click', onCancel);
+            confirmBtn.removeEventListener('click', onConfirm);
+        };
+        const onCancel = () => { cleanup(); resolve(false); };
+        const onConfirm = () => { cleanup(); resolve(true); };
+        cancelBtn.addEventListener('click', onCancel);
+        confirmBtn.addEventListener('click', onConfirm);
+        overlay.classList.add('visible');
+    });
 }
 
 
@@ -1247,7 +1303,24 @@ document.getElementById('submit-btn')?.addEventListener('click', async () => {
     btn.querySelector('span').textContent = 'Submitting…';
 
     try {
-        await appendRowToExcel(collectSubmissionRow());
+        if ('showSaveFilePicker' in window && typeof XLSX !== 'undefined') {
+            const handle = await getExcelFileHandle();
+            const { workbook, sheetName, existingRows } = await readExcelWorkbook(handle);
+            const row = collectSubmissionRow();
+
+            const duplicate = findDuplicateRow(row, existingRows);
+            if (duplicate) {
+                const proceed = await showDuplicateWarning();
+                if (!proceed) {
+                    btn.disabled = false;
+                    btn.querySelector('span').textContent = 'Submit Registration';
+                    return;
+                }
+            }
+
+            const updatedWorkbook = buildWorkbookWithRow(row, workbook, sheetName, existingRows);
+            await saveWorkbook(handle, updatedWorkbook);
+        }
     } catch (e) {
         console.error('Could not save this submission to the test Excel file:', e);
     }

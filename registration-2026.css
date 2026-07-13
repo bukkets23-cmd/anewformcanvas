@@ -435,6 +435,59 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 
 
+/* ── DUPLICATE WARNING MODAL ── */
+.dup-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(13,33,55,0.55);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.dup-modal-overlay.visible {
+    display: flex;
+}
+
+.dup-modal {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 36px 32px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(13,33,55,0.35);
+}
+
+.dup-modal h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.3rem;
+    color: var(--navy);
+    margin: 12px 0 10px;
+}
+
+.dup-modal p {
+    font-size: 0.9rem;
+    color: var(--gray-600);
+    line-height: 1.65;
+    margin-bottom: 24px;
+}
+
+.dup-modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dup-modal-actions .back-page-btn,
+.dup-modal-actions .submit-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+
 /* ── RESPONSIVE ── */
 @media (max-width: 620px) {
     .radio-group { grid-template-columns: 1fr; }

@@ -1988,6 +1988,25 @@
             </div>
         </div>
 
+        <!-- DUPLICATE SUBMISSION WARNING -->
+        <div class="dup-modal-overlay" id="dup-modal-overlay">
+            <div class="dup-modal">
+                <div class="dup-modal-icon">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                        <circle cx="20" cy="20" r="20" fill="rgba(220,38,38,0.10)"/>
+                        <path d="M20 12v10" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="20" cy="27" r="1.6" fill="#DC2626"/>
+                    </svg>
+                </div>
+                <h3>This looks like a duplicate submission</h3>
+                <p>A registration with this exact name, mobile phone number, and personal email already exists in the records file. If this is a mistake, go back and double-check your details — otherwise you can submit anyway.</p>
+                <div class="dup-modal-actions">
+                    <button type="button" class="back-page-btn" id="dup-modal-cancel">Go back and check</button>
+                    <button type="button" class="submit-btn" id="dup-modal-confirm"><span>Submit anyway</span></button>
+                </div>
+            </div>
+        </div>
+
     </div>
 </main>
 
