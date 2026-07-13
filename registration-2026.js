@@ -1160,7 +1160,9 @@ async function submitRowToSheet(row, force) {
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ row, force }),
     });
-    return response.json();
+    const result = await response.json();
+    if (result.error) console.error('Google Sheet webhook error:', result.error);
+    return result;
 }
 
 function showDuplicateWarning() {

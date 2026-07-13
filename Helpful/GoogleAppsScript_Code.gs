@@ -1,7 +1,16 @@
 // Paste this entire file into Extensions -> Apps Script in your Google Sheet,
 // replacing any placeholder code. Then Deploy -> New deployment -> Web app
 // (Execute as: Me, Who has access: Anyone) and send the resulting URL back.
+//
+// Writes are targeted at SPREADSHEET_ID explicitly (rather than
+// SpreadsheetApp.getActiveSpreadsheet()) so this works whether the script
+// is bound to that Sheet or a standalone project — getActiveSpreadsheet()
+// silently has nothing to attach to in a standalone project, which causes
+// every submission to fail before a single header or row is ever written.
+// Rows land on a tab named "Registrations", NOT the default "Sheet1" tab
+// — check the tab list at the bottom of the spreadsheet if rows seem missing.
 
+const SPREADSHEET_ID = '1xnQbzweYbNtChbNyD7ZJs0lJjhSWzUY6RhdVMy5rXOo';
 const SHEET_NAME = 'Registrations';
 
 function doPost(e) {
@@ -9,7 +18,7 @@ function doPost(e) {
   lock.waitLock(10000);
 
   try {
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     const sheet = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
 
     const payload = JSON.parse(e.postData.contents);
@@ -53,6 +62,8 @@ function doPost(e) {
     sheet.appendRow(values);
 
     return jsonOutput({ duplicate: duplicate, saved: true });
+  } catch (err) {
+    return jsonOutput({ error: String(err && err.message || err) });
   } finally {
     lock.releaseLock();
   }
