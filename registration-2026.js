@@ -461,7 +461,11 @@ document.querySelectorAll('input[name="onCycle2028"]').forEach(radio => {
 
 
 // ── PROGRESS ─────────────────────────────────────────────────────────────────
-// Counts required fields on the current page only (progress bar scoped per page)
+// Counts required fields per page (all 6 pages live in this one document, so
+// every counter below can run regardless of which page is currently shown).
+// The bar sums across all of them, so it reflects true whole-form completion
+// and only climbs as pages advance — it doesn't reset each time a new page
+// starts with fewer of its own fields filled in.
 
 function countPage1Filled() {
     let n = 0;
@@ -553,12 +557,12 @@ function countPage6Filled() {
 
 const PAGE6_TOTAL = 1;
 
+const FORM_TOTAL = PAGE1_TOTAL + PAGE2_TOTAL + PAGE3_TOTAL + PAGE4_TOTAL + PAGE5_TOTAL + PAGE6_TOTAL;
+
 function updateProgress() {
-    const counters = { 1: countPage1Filled, 2: countPage2Filled, 3: countPage3Filled, 4: countPage4Filled, 5: countPage5Filled, 6: countPage6Filled };
-    const totals   = { 1: PAGE1_TOTAL,      2: PAGE2_TOTAL,      3: PAGE3_TOTAL,      4: PAGE4_TOTAL,      5: PAGE5_TOTAL,      6: PAGE6_TOTAL };
-    const filled = (counters[currentPage] || countPage1Filled)();
-    const total  = totals[currentPage] || PAGE1_TOTAL;
-    const pct = Math.round((filled / total) * 100);
+    const filled = countPage1Filled() + countPage2Filled() + countPage3Filled()
+        + countPage4Filled() + countPage5Filled() + countPage6Filled();
+    const pct = Math.round((filled / FORM_TOTAL) * 100);
     document.getElementById('completion-fill').style.width = Math.min(pct, 100) + '%';
 }
 
