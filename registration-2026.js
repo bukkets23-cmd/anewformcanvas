@@ -1055,15 +1055,15 @@ document.getElementById('next-btn-5')?.addEventListener('click', () => {
 });
 
 
-// ── EXCEL EXPORT (TEST) ───────────────────────────────────────────────────────
-// Temporary local testing mechanism: appends each submission as a row in a
-// local .xlsx file via the File System Access API (Chrome/Edge only). The
-// file handle is remembered in IndexedDB so repeated test submissions keep
-// appending to the SAME file without re-prompting each time. No backend —
-// this is strictly for verifying multi-submission behavior before a real
-// data pipeline is built. Before appending, each submission is checked
-// against existing rows for a name+phone+email match (see DUPLICATE
-// DETECTION below) and the user is warned if one is found.
+// ── SUBMISSION EXPORT ─────────────────────────────────────────────────────────
+// Each submission is POSTed to a Google Apps Script Web App tied to a Google
+// Sheet ("Helpful/GoogleAppsScript_Code.gs" is the deployed script's source).
+// The script itself appends the row and does the name+phone+email duplicate
+// check server-side (against every row anyone has ever submitted, not just
+// what this one browser has seen), returning { duplicate, saved } so this
+// file only needs to react to that result. Sent as text/plain rather than
+// application/json so the browser treats it as a "simple request" and skips
+// the CORS preflight that Apps Script Web Apps don't handle.
 
 const SUBMISSION_FIELDS = [
     // Page 1 — Candidate Information / Full Time Placement / Internship / Industry
@@ -1152,121 +1152,15 @@ function collectSubmissionRow() {
     return row;
 }
 
-const IDB_NAME = 'gcsp_registration_db';
-const IDB_STORE = 'handles';
-const IDB_KEY = 'excelFileHandle';
-const EXCEL_TEST_FILENAME = 'GCSP_Registration_TEST_records.xlsx';
+const SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycby5rCo6ogeVUAujR_IGuU5kVTJOJGC34zLLLynlfBZBmS2fog_e1NZna6wnI9_oZeGp/exec';
 
-function idbOpen() {
-    return new Promise((resolve, reject) => {
-        const req = indexedDB.open(IDB_NAME, 1);
-        req.onupgradeneeded = () => req.result.createObjectStore(IDB_STORE);
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => reject(req.error);
+async function submitRowToSheet(row, force) {
+    const response = await fetch(SHEETS_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ row, force }),
     });
-}
-
-async function idbGetHandle() {
-    const db = await idbOpen();
-    return new Promise((resolve, reject) => {
-        const req = db.transaction(IDB_STORE, 'readonly').objectStore(IDB_STORE).get(IDB_KEY);
-        req.onsuccess = () => resolve(req.result || null);
-        req.onerror = () => reject(req.error);
-    });
-}
-
-async function idbSetHandle(handle) {
-    const db = await idbOpen();
-    return new Promise((resolve, reject) => {
-        const tx = db.transaction(IDB_STORE, 'readwrite');
-        tx.objectStore(IDB_STORE).put(handle, IDB_KEY);
-        tx.oncomplete = () => resolve();
-        tx.onerror = () => reject(tx.error);
-    });
-}
-
-async function getExcelFileHandle() {
-    let handle = await idbGetHandle().catch(() => null);
-
-    if (handle) {
-        const perm = await handle.queryPermission({ mode: 'readwrite' });
-        if (perm === 'granted') return handle;
-        if (perm === 'prompt') {
-            const req = await handle.requestPermission({ mode: 'readwrite' });
-            if (req === 'granted') return handle;
-        }
-        // permission denied/revoked — fall through and ask the user to pick again
-    }
-
-    handle = await window.showSaveFilePicker({
-        suggestedName: EXCEL_TEST_FILENAME,
-        types: [{
-            description: 'Excel Workbook',
-            accept: { 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'] },
-        }],
-    });
-    await idbSetHandle(handle).catch(() => { /* IndexedDB unavailable — will re-prompt next time */ });
-    return handle;
-}
-
-async function readExcelWorkbook(handle) {
-    const file = await handle.getFile();
-    if (file.size === 0) return { workbook: null, sheetName: null, existingRows: [] };
-
-    const buffer = await file.arrayBuffer();
-    const workbook = XLSX.read(buffer, { type: 'array' });
-    const sheetName = workbook.SheetNames[0];
-    const existingRows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
-    return { workbook, sheetName, existingRows };
-}
-
-function buildWorkbookWithRow(row, workbook, sheetName, existingRows) {
-    const headers = Object.keys(row);
-    if (workbook) {
-        existingRows.push(row);
-        workbook.Sheets[sheetName] = XLSX.utils.json_to_sheet(existingRows, { header: headers });
-        return workbook;
-    }
-    const newWorkbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(newWorkbook, XLSX.utils.json_to_sheet([row], { header: headers }), 'Registrations');
-    return newWorkbook;
-}
-
-async function saveWorkbook(handle, workbook) {
-    const outBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
-    const writable = await handle.createWritable();
-    await writable.write(outBuffer);
-    await writable.close();
-}
-
-// ── DUPLICATE DETECTION ────────────────────────────────────────────────────
-// Flags a submission as a duplicate only when full name, mobile phone, AND
-// personal email all match a row already in the Excel file — this is the
-// only record store this form controls, and it's what eventually gets
-// uploaded into Cluen, so catching duplicates here is what actually prevents
-// them downstream. Requiring all three (rather than just one) avoids false
-// positives from a single shared field (e.g. siblings on one phone line).
-
-function normalizeForMatch(str) {
-    return (str || '').trim().toLowerCase().replace(/\s+/g, ' ');
-}
-
-function normalizePhoneForMatch(str) {
-    return (str || '').replace(/\D/g, '');
-}
-
-function findDuplicateRow(newRow, existingRows) {
-    const newName = normalizeForMatch(`${newRow['First Name']} ${newRow['Last Name']}`);
-    const newPhone = normalizePhoneForMatch(newRow['Mobile Phone']);
-    const newEmail = normalizeForMatch(newRow['Personal Email']);
-    if (!newName || !newPhone || !newEmail) return null;
-
-    return existingRows.find(r => {
-        const name = normalizeForMatch(`${r['First Name']} ${r['Last Name']}`);
-        const phone = normalizePhoneForMatch(r['Mobile Phone']);
-        const email = normalizeForMatch(r['Personal Email']);
-        return name === newName && phone === newPhone && email === newEmail;
-    }) || null;
+    return response.json();
 }
 
 function showDuplicateWarning() {
@@ -1303,26 +1197,20 @@ document.getElementById('submit-btn')?.addEventListener('click', async () => {
     btn.querySelector('span').textContent = 'Submitting…';
 
     try {
-        if ('showSaveFilePicker' in window && typeof XLSX !== 'undefined') {
-            const handle = await getExcelFileHandle();
-            const { workbook, sheetName, existingRows } = await readExcelWorkbook(handle);
-            const row = collectSubmissionRow();
+        const row = collectSubmissionRow();
+        const result = await submitRowToSheet(row, false);
 
-            const duplicate = findDuplicateRow(row, existingRows);
-            if (duplicate) {
-                const proceed = await showDuplicateWarning();
-                if (!proceed) {
-                    btn.disabled = false;
-                    btn.querySelector('span').textContent = 'Submit Registration';
-                    return;
-                }
+        if (result.duplicate) {
+            const proceed = await showDuplicateWarning();
+            if (!proceed) {
+                btn.disabled = false;
+                btn.querySelector('span').textContent = 'Submit Registration';
+                return;
             }
-
-            const updatedWorkbook = buildWorkbookWithRow(row, workbook, sheetName, existingRows);
-            await saveWorkbook(handle, updatedWorkbook);
+            await submitRowToSheet(row, true);
         }
     } catch (e) {
-        console.error('Could not save this submission to the test Excel file:', e);
+        console.error('Could not save this submission to the Google Sheet:', e);
     }
 
     setTimeout(() => {
