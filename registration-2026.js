@@ -163,6 +163,92 @@ function getForm1ResumeFileName() {
     } catch (e) { return ''; }
 }
 
+
+// ── PREFILL FROM FORM 1 ───────────────────────────────────────────────────────
+// Carries over answers already given on Form 1 so candidates only review
+// rather than retype. Runs after restoreFormData() and only ever touches
+// fields still blank on this page, so this session's own in-progress answers
+// always win. Per explicit user choice: Vertical/Group and Office Location
+// prefill even though Form 1's answer may predate a confirmed placement,
+// since both stay freely editable here; Bank/Firm only prefills on an exact
+// (case/whitespace-insensitive) match against the dropdown's options, since
+// "Current Company" and "Full Time Bank/Firm" can legitimately name
+// different companies (e.g. an internship vs. the eventual full-time offer).
+
+function selectMatchingOption(selectEl, rawValue) {
+    if (!selectEl || !rawValue) return false;
+    const target = rawValue.trim().toLowerCase();
+    const option = [...selectEl.options].find(o => o.value.trim().toLowerCase() === target);
+    if (!option) return false;
+    selectEl.value = option.value;
+    return true;
+}
+
+function prefillCheckboxGroup(name, values) {
+    if (document.querySelector(`input[name="${name}"]:checked`)) return;
+    (values || []).forEach(val => {
+        const cb = document.querySelector(`input[name="${name}"][value="${val}"]`);
+        if (cb) {
+            cb.checked = true;
+            cb.dispatchEvent(new Event('change'));
+        }
+    });
+}
+
+function prefillFromForm1() {
+    let form1;
+    try {
+        const raw = sessionStorage.getItem('gcsp_form1');
+        if (!raw) return;
+        form1 = JSON.parse(raw);
+    } catch (e) { return; }
+
+    // Full Name -> First/Last (split on the first space)
+    const firstNameEl = document.getElementById('firstName');
+    const lastNameEl = document.getElementById('lastName');
+    if (form1.fullName && !firstNameEl.value && !lastNameEl.value) {
+        const parts = form1.fullName.trim().split(/\s+/);
+        firstNameEl.value = parts[0] || '';
+        lastNameEl.value = parts.slice(1).join(' ');
+    }
+
+    // Simple like-for-like text fields
+    const textMap = { email: 'regEmail', phone: 'regPhone', vertical: 'vertical2026' };
+    Object.entries(textMap).forEach(([form1Key, id]) => {
+        const el = document.getElementById(id);
+        if (el && !el.value && form1[form1Key]) el.value = form1[form1Key];
+    });
+
+    // Undergrad Year — only sets if Form 1's value matches one of this select's options
+    const undergradYearEl = document.getElementById('undergradYear');
+    if (undergradYearEl && !undergradYearEl.value && selectMatchingOption(undergradYearEl, form1.undergradYear)) {
+        undergradYearEl.dispatchEvent(new Event('change'));
+    }
+
+    // Full Time Office Location — same city list as Form 1's dropdown
+    const officeLocationEl = document.getElementById('officeLocation');
+    if (officeLocationEl && !officeLocationEl.value && selectMatchingOption(officeLocationEl, form1.location)) {
+        officeLocationEl.dispatchEvent(new Event('change'));
+    }
+
+    // Full Time Bank/Firm — only on an exact match against the dropdown's firms
+    const firmNameEl = document.getElementById('firmName');
+    if (firmNameEl && !firmNameEl.value && selectMatchingOption(firmNameEl, form1.currentCompany)) {
+        firmNameEl.dispatchEvent(new Event('change'));
+    }
+
+    // Gender Identity / Ethnicity / Citizenship-Visa checkbox groups
+    prefillCheckboxGroup('gender', form1.gender);
+    if (form1.genderCustom) {
+        const genderCustomEl = document.getElementById('genderCustom');
+        if (genderCustomEl && !genderCustomEl.value) genderCustomEl.value = form1.genderCustom;
+    }
+    prefillCheckboxGroup('ethnicityBg', form1.ethnicity);
+    prefillCheckboxGroup('citizenshipVisa', form1.citizenship);
+
+    updateProgress();
+}
+
 const resumeZone      = document.getElementById('upload-zone-2026');
 const resumeInput     = document.getElementById('resumeFile2026');
 const resumeChosen    = document.getElementById('file-chosen-2026');
@@ -1234,5 +1320,6 @@ document.getElementById('submit-btn')?.addEventListener('click', async () => {
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 restoreFormData();
+prefillFromForm1();
 initResumeDisplay();
 showPage(1);
