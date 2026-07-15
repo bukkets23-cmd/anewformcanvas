@@ -173,19 +173,27 @@ function rowObjectFromSheetRow_(headers, rowValues) {
   return obj;
 }
 
+// Registration's row has First Name/Last Name/Mobile Phone/Personal Email.
+// A Form 1-only row (nobody has reached Registration yet) only has these
+// "Website Resume Drop - ..." columns instead, so fall back to them when the
+// canonical fields are blank — otherwise two Form-1-only submissions from the
+// same person could never be recognized as duplicates of each other.
+function duplicateKey_(row) {
+  const name = normalize(
+    (row['First Name'] || row['Last Name'])
+      ? (row['First Name'] || '') + ' ' + (row['Last Name'] || '')
+      : (row['Website Resume Drop - Full Name'] || '')
+  );
+  const phone = normalizePhone(row['Mobile Phone'] || row['Website Resume Drop - Phone']);
+  const email = normalize(row['Personal Email'] || row['Website Resume Drop - Email']);
+
+  if (!name || !phone || !email) return '';
+  return name + '|' + phone + '|' + email;
+}
+
 function isDuplicateSubmission_(row, dataRows, headers) {
-  const nameIdx = headers.indexOf('First Name');
-  const lastNameIdx = headers.indexOf('Last Name');
-  const phoneIdx = headers.indexOf('Mobile Phone');
-  const emailIdx = headers.indexOf('Personal Email');
-
-  const newName = normalize(row['First Name'] + ' ' + row['Last Name']);
-  const newPhone = normalizePhone(row['Mobile Phone']);
-  const newEmail = normalize(row['Personal Email']);
-
-  if (!newName || !newPhone || !newEmail || nameIdx === -1 || lastNameIdx === -1 || phoneIdx === -1 || emailIdx === -1) {
-    return false;
-  }
+  const newKey = duplicateKey_(row);
+  if (!newKey) return false;
 
   const submissionIdIdx = headers.indexOf(SUBMISSION_ID_HEADER);
   const currentId = String(row[SUBMISSION_ID_HEADER] || '').trim();
@@ -194,10 +202,7 @@ function isDuplicateSubmission_(row, dataRows, headers) {
     if (submissionIdIdx !== -1 && currentId && String(r[submissionIdIdx] || '').trim() === currentId) {
       return false;
     }
-    const name = normalize(r[nameIdx] + ' ' + r[lastNameIdx]);
-    const phone = normalizePhone(r[phoneIdx]);
-    const email = normalize(r[emailIdx]);
-    return name === newName && phone === newPhone && email === newEmail;
+    return duplicateKey_(rowObjectFromSheetRow_(headers, r)) === newKey;
   });
 }
 

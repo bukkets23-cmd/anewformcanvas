@@ -366,14 +366,37 @@ document.getElementById('resume-form')?.addEventListener('submit', async functio
     btn.disabled = true;
     btn.querySelector('span').textContent = 'Continuing…';
 
+    const submissionId = getOrCreateSubmissionId();
+
     // Keep resume bytes in IndexedDB so Registration can upload them to Drive
     // (browsers won't restore file inputs after navigation).
     try {
-        const submissionId = getOrCreateSubmissionId();
         const resumeFile = document.getElementById('resumeFile')?.files[0];
         if (resumeFile) await saveResumeBlob(submissionId, resumeFile);
     } catch (err) {
         console.warn('Could not persist resume for the next step:', err);
+    }
+
+    // Best-effort: push what's been entered here to the Sheet immediately, so a
+    // candidate who never continues into Registration still leaves a record.
+    // If this fails, their data is still safe locally, and Registration's own
+    // Page 1 sync will create/update the same row (matched by Submission ID).
+    try {
+        const resumeFile = await buildResumePayload(fileInput);
+        const row = {
+            'Submitted At': new Date().toISOString(),
+            'Submission ID': submissionId,
+            ...collectForm1SheetFields(),
+        };
+        await submitRowToSheet({
+            row,
+            submissionId,
+            force: false,
+            resumeFile,
+            completionStatus: 'In Progress - Resume Drop',
+        });
+    } catch (err) {
+        console.warn('Could not sync resume-drop progress to the Google Sheet:', err);
     }
 
     const year = document.getElementById('undergradYear').value.trim();
