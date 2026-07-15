@@ -350,7 +350,7 @@ function validate() {
 
 // ── SUBMIT ────────────────────────────────────────────────────────────────────
 
-document.getElementById('resume-form')?.addEventListener('submit', function (e) {
+document.getElementById('resume-form')?.addEventListener('submit', async function (e) {
     e.preventDefault();
 
     if (!validate()) {
@@ -365,6 +365,16 @@ document.getElementById('resume-form')?.addEventListener('submit', function (e) 
     const btn = document.getElementById('submit-btn');
     btn.disabled = true;
     btn.querySelector('span').textContent = 'Continuing…';
+
+    // Keep resume bytes in IndexedDB so Registration can upload them to Drive
+    // (browsers won't restore file inputs after navigation).
+    try {
+        const submissionId = getOrCreateSubmissionId();
+        const resumeFile = document.getElementById('resumeFile')?.files[0];
+        if (resumeFile) await saveResumeBlob(submissionId, resumeFile);
+    } catch (err) {
+        console.warn('Could not persist resume for the next step:', err);
+    }
 
     const year = document.getElementById('undergradYear').value.trim();
     const yr   = parseInt(year, 10);

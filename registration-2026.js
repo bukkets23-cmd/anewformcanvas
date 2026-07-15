@@ -1099,49 +1099,49 @@ function validatePage6() {
 
 // ── NAVIGATION ────────────────────────────────────────────────────────────────
 
-document.getElementById('next-btn')?.addEventListener('click', () => {
+document.getElementById('next-btn')?.addEventListener('click', async () => {
     if (!validatePage1()) {
         document.querySelector('#page-1 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
     saveFormData();
-    showPage(2);
+    await savePageProgress(1, () => showPage(2), document.getElementById('next-btn'));
 });
 
-document.getElementById('next-btn-2')?.addEventListener('click', () => {
+document.getElementById('next-btn-2')?.addEventListener('click', async () => {
     if (!validatePage2()) {
         document.querySelector('#page-2 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
     saveFormData();
-    showPage(3);
+    await savePageProgress(2, () => showPage(3), document.getElementById('next-btn-2'));
 });
 
-document.getElementById('next-btn-3')?.addEventListener('click', () => {
+document.getElementById('next-btn-3')?.addEventListener('click', async () => {
     if (!validatePage3()) {
         document.querySelector('#page-3 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
     saveFormData();
-    showPage(4);
+    await savePageProgress(3, () => showPage(4), document.getElementById('next-btn-3'));
 });
 
-document.getElementById('next-btn-4')?.addEventListener('click', () => {
+document.getElementById('next-btn-4')?.addEventListener('click', async () => {
     if (!validatePage4()) {
         document.querySelector('#page-4 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
     saveFormData();
-    showPage(5);
+    await savePageProgress(4, () => showPage(5), document.getElementById('next-btn-4'));
 });
 
-document.getElementById('next-btn-5')?.addEventListener('click', () => {
+document.getElementById('next-btn-5')?.addEventListener('click', async () => {
     if (!validatePage5()) {
         document.querySelector('#page-5 .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
     saveFormData();
-    showPage(6);
+    await savePageProgress(5, () => showPage(6), document.getElementById('next-btn-5'));
 });
 
 
@@ -1219,6 +1219,8 @@ function collectSubmissionRow() {
     const row = {
         'Submitted At': new Date().toISOString(),
         'Class Year': classYear,
+        'Submission ID': getStoredSubmissionId() || getOrCreateSubmissionId(),
+        ...collectForm1SheetFields(),
     };
 
     SUBMISSION_FIELDS.forEach(f => {
@@ -1237,22 +1239,81 @@ function collectSubmissionRow() {
         row[f.label] = val;
     });
 
-    row['Resume Filename'] = resumeInput?.files[0]?.name || getForm1ResumeFileName() || '';
+    const liveName = resumeInput?.files[0]?.name;
+    const form1Name = getForm1ResumeFileName();
+    row['Resume Filename'] = liveName || form1Name || row['Resume Filename'] || '';
 
     return row;
 }
 
-const SHEETS_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycby5rCo6ogeVUAujR_IGuU5kVTJOJGC34zLLLynlfBZBmS2fog_e1NZna6wnI9_oZeGp/exec';
+async function syncProgressToSheet(completionStatus, { forceDuplicate = false, includeResume = false } = {}) {
+    const row = collectSubmissionRow();
+    const resumeFile = includeResume ? await buildResumePayload(resumeInput) : null;
 
-async function submitRowToSheet(row, force) {
-    const response = await fetch(SHEETS_WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ row, force }),
+    const result = await submitRowToSheet({
+        row,
+        submissionId: getStoredSubmissionId() || getOrCreateSubmissionId(),
+        force: forceDuplicate,
+        resumeFile,
+        completionStatus,
     });
-    const result = await response.json();
-    if (result.error) console.error('Google Sheet webhook error:', result.error);
+
     return result;
+}
+
+async function savePageProgress(pageNumber, nextPageFn, nextBtn) {
+    const statusByPage = {
+        1: 'In Progress - Page 1',
+        2: 'In Progress - Page 2',
+        3: 'In Progress - Page 3',
+        4: 'In Progress - Page 4',
+        5: 'In Progress - Page 5',
+    };
+
+    const originalLabel = nextBtn?.querySelector('span')?.textContent || 'Next';
+    if (nextBtn) {
+        nextBtn.disabled = true;
+        const label = nextBtn.querySelector('span');
+        if (label) label.textContent = pageNumber === 1 ? 'Saving…' : 'Saving progress…';
+    }
+
+    try {
+        const result = await syncProgressToSheet(statusByPage[pageNumber], {
+            includeResume: pageNumber === 1,
+        });
+
+        if (result.duplicate) {
+            const proceed = await showDuplicateWarning();
+            if (!proceed) return false;
+
+            const forced = await syncProgressToSheet(statusByPage[pageNumber], {
+                forceDuplicate: true,
+                includeResume: pageNumber === 1,
+            });
+            if (!forced.saved) {
+                alert('Your answers were saved on this device, but we could not reach the records file. Please check your connection and try again.');
+                return pageNumber === 1 ? false : true;
+            }
+        } else if (!result.saved) {
+            alert('Your answers were saved on this device, but we could not reach the records file. Please check your connection and try again.');
+            if (pageNumber === 1) return false;
+        }
+
+        nextPageFn();
+        return true;
+    } catch (e) {
+        console.error('Could not save progress to the Google Sheet:', e);
+        alert('Your answers were saved on this device, but we could not reach the records file. Please check your connection and try again.');
+        if (pageNumber === 1) return false;
+        nextPageFn();
+        return true;
+    } finally {
+        if (nextBtn) {
+            nextBtn.disabled = false;
+            const label = nextBtn.querySelector('span');
+            if (label) label.textContent = originalLabel;
+        }
+    }
 }
 
 function showDuplicateWarning() {
@@ -1289,8 +1350,15 @@ document.getElementById('submit-btn')?.addEventListener('click', async () => {
     btn.querySelector('span').textContent = 'Submitting…';
 
     try {
+        const resumeFile = await buildResumePayload(resumeInput);
         const row = collectSubmissionRow();
-        const result = await submitRowToSheet(row, false);
+        let result = await submitRowToSheet({
+            row,
+            submissionId: getStoredSubmissionId() || getOrCreateSubmissionId(),
+            force: false,
+            resumeFile,
+            completionStatus: 'Complete',
+        });
 
         if (result.duplicate) {
             const proceed = await showDuplicateWarning();
@@ -1299,14 +1367,29 @@ document.getElementById('submit-btn')?.addEventListener('click', async () => {
                 btn.querySelector('span').textContent = 'Submit Registration';
                 return;
             }
-            await submitRowToSheet(row, true);
+            result = await submitRowToSheet({
+                row,
+                submissionId: getStoredSubmissionId() || getOrCreateSubmissionId(),
+                force: true,
+                resumeFile,
+                completionStatus: 'Complete',
+            });
+        }
+
+        if (!result.saved) {
+            throw new Error(result.error || 'Save failed');
         }
     } catch (e) {
         console.error('Could not save this submission to the Google Sheet:', e);
+        alert('We could not save your registration to the records file. Please check your connection and try again.');
+        btn.disabled = false;
+        btn.querySelector('span').textContent = 'Submit Registration';
+        return;
     }
 
-    setTimeout(() => {
+    setTimeout(async () => {
         try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
+        await clearSubmissionSession();
         document.getElementById('page-6').style.display = 'none';
         document.querySelector('.reg-title-block').style.display = 'none';
         document.querySelector('.step-track').style.display = 'none';

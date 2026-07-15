@@ -9,11 +9,21 @@
 // every submission to fail before a single header or row is ever written.
 // Rows land on a tab named "Registrations", NOT the default "Sheet1" tab
 // — check the tab list at the bottom of the spreadsheet if rows seem missing.
+//
+// Resume files are saved to Google Drive (folder below) and a clickable link
+// is written to the "Resume Link" column. Progressive saves update the same
+// row (matched by "Submission ID") as the candidate advances through pages.
 
 const SPREADSHEET_ID = '1xnQbzweYbNtChbNyD7ZJs0lJjhSWzUY6RhdVMy5rXOo';
 const SHEET_NAME = 'Registrations';
+const RESUMES_FOLDER_NAME = 'GCSP Resume Uploads';
 const DUPLICATE_FLAG_HEADER = 'Duplicate Override';
+const SUBMISSION_ID_HEADER = 'Submission ID';
+const COMPLETION_STATUS_HEADER = 'Completion Status';
+const RESUME_LINK_HEADER = 'Resume Link';
+const RESUME_FILENAME_HEADER = 'Resume Filename';
 const DUPLICATE_FLAG_COLOR = '#FFF3CD';
+const IN_PROGRESS_COLOR = '#E8F4FD';
 
 function doPost(e) {
   const lock = LockService.getScriptLock();
@@ -24,69 +34,213 @@ function doPost(e) {
     const sheet = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
 
     const payload = JSON.parse(e.postData.contents);
-    const row = payload.row;
+    const incomingRow = payload.row || {};
     const force = !!payload.force;
+    let submissionId = String(payload.submissionId || incomingRow[SUBMISSION_ID_HEADER] || '').trim();
+    const resumeFile = payload.resumeFile;
 
-    if (sheet.getLastRow() === 0) {
-      sheet.appendRow(Object.keys(row).concat([DUPLICATE_FLAG_HEADER]));
-    }
+    ensureHeaders_(sheet, incomingRow);
 
-    let numCols = sheet.getLastColumn();
-    let existingHeaders = sheet.getRange(1, 1, 1, numCols).getValues()[0];
+    const numCols = sheet.getLastColumn();
+    const existingHeaders = sheet.getRange(1, 1, 1, numCols).getValues()[0];
+    const submissionIdIdx = existingHeaders.indexOf(SUBMISSION_ID_HEADER);
 
-    // One-time migration for sheets created before this column existed.
-    if (existingHeaders.indexOf(DUPLICATE_FLAG_HEADER) === -1) {
-      sheet.getRange(1, numCols + 1).setValue(DUPLICATE_FLAG_HEADER);
-      existingHeaders = existingHeaders.concat([DUPLICATE_FLAG_HEADER]);
-      numCols += 1;
+    if (!submissionId) {
+      submissionId = Utilities.getUuid();
     }
 
     const lastRow = sheet.getLastRow();
-    const dataRows = lastRow > 1 ? sheet.getRange(2, 1, lastRow - 1, numCols).getValues() : [];
+    const dataRowCount = Math.max(0, lastRow - 1);
+    const dataRows = dataRowCount
+      ? sheet.getRange(2, 1, lastRow, numCols).getValues()
+      : [];
 
-    const nameIdx = existingHeaders.indexOf('First Name');
-    const lastNameIdx = existingHeaders.indexOf('Last Name');
-    const phoneIdx = existingHeaders.indexOf('Mobile Phone');
-    const emailIdx = existingHeaders.indexOf('Personal Email');
+    let targetRowIndex = findSubmissionRowIndex_(dataRows, existingHeaders, submissionId);
 
-    const newName = normalize(row['First Name'] + ' ' + row['Last Name']);
-    const newPhone = normalizePhone(row['Mobile Phone']);
-    const newEmail = normalize(row['Personal Email']);
+    const mergedRow = targetRowIndex === -1
+      ? {}
+      : rowObjectFromSheetRow_(existingHeaders, dataRows[targetRowIndex]);
 
-    let duplicate = false;
-    if (newName && newPhone && newEmail && nameIdx !== -1 && lastNameIdx !== -1 && phoneIdx !== -1 && emailIdx !== -1) {
-      duplicate = dataRows.some(r => {
-        const name = normalize(r[nameIdx] + ' ' + r[lastNameIdx]);
-        const phone = normalizePhone(r[phoneIdx]);
-        const email = normalize(r[emailIdx]);
-        return name === newName && phone === newPhone && email === newEmail;
-      });
+    Object.keys(incomingRow).forEach(function (key) {
+      const val = incomingRow[key];
+      if (val !== undefined && val !== null && String(val).trim() !== '') {
+        mergedRow[key] = val;
+      }
+    });
+
+    mergedRow[SUBMISSION_ID_HEADER] = submissionId;
+
+    if (resumeFile && resumeFile.data) {
+      const resumeMeta = saveResumeToDrive_(resumeFile, submissionId);
+      mergedRow[RESUME_LINK_HEADER] = resumeMeta.url;
+      mergedRow[RESUME_FILENAME_HEADER] = resumeMeta.name;
     }
+
+    const duplicate = targetRowIndex === -1 && isDuplicateSubmission_(mergedRow, dataRows, existingHeaders);
 
     if (duplicate && !force) {
-      return jsonOutput({ duplicate: true, saved: false });
+      return jsonOutput({ duplicate: true, saved: false, submissionId: submissionId });
     }
-
-    // Reaching here with duplicate === true means force === true (the
-    // !force case already returned above) — i.e. the user clicked
-    // "Submit anyway" on the warning modal. Flag and highlight that row
-    // so it's visually distinct from ordinary, non-duplicate records.
-    const values = existingHeaders.map(h => {
-      if (h === DUPLICATE_FLAG_HEADER) return duplicate ? 'Yes - submitted despite duplicate warning' : '';
-      return row[h] !== undefined ? row[h] : '';
-    });
-    sheet.appendRow(values);
 
     if (duplicate) {
-      sheet.getRange(sheet.getLastRow(), 1, 1, numCols).setBackground(DUPLICATE_FLAG_COLOR);
+      mergedRow[DUPLICATE_FLAG_HEADER] = 'Yes - submitted despite duplicate warning';
+    } else if (!mergedRow[DUPLICATE_FLAG_HEADER]) {
+      mergedRow[DUPLICATE_FLAG_HEADER] = '';
     }
 
-    return jsonOutput({ duplicate: duplicate, saved: true });
+    const values = existingHeaders.map(function (h) {
+      return mergedRow[h] !== undefined ? mergedRow[h] : '';
+    });
+
+    if (targetRowIndex === -1) {
+      sheet.appendRow(values);
+      highlightRow_(sheet, sheet.getLastRow(), numCols, duplicate ? DUPLICATE_FLAG_COLOR : IN_PROGRESS_COLOR);
+    } else {
+      const sheetRowNumber = targetRowIndex + 2;
+      sheet.getRange(sheetRowNumber, 1, 1, numCols).setValues([values]);
+      const status = String(mergedRow[COMPLETION_STATUS_HEADER] || '');
+      const bg = duplicate
+        ? DUPLICATE_FLAG_COLOR
+        : (status === 'Complete' ? null : IN_PROGRESS_COLOR);
+      highlightRow_(sheet, sheetRowNumber, numCols, bg);
+    }
+
+    return jsonOutput({
+      duplicate: duplicate,
+      saved: true,
+      submissionId: submissionId,
+      updated: targetRowIndex !== -1,
+    });
   } catch (err) {
-    return jsonOutput({ error: String(err && err.message || err) });
+    return jsonOutput({ error: String(err && err.message || err), saved: false });
   } finally {
     lock.releaseLock();
   }
+}
+
+function ensureHeaders_(sheet, incomingRow) {
+  const reserved = [
+    SUBMISSION_ID_HEADER,
+    COMPLETION_STATUS_HEADER,
+    RESUME_LINK_HEADER,
+    RESUME_FILENAME_HEADER,
+    DUPLICATE_FLAG_HEADER,
+  ];
+
+  if (sheet.getLastRow() === 0) {
+    const initial = reserved.concat(Object.keys(incomingRow));
+    sheet.appendRow(uniqueHeaders_(initial));
+    return;
+  }
+
+  const numCols = sheet.getLastColumn();
+  let headers = sheet.getRange(1, 1, 1, numCols).getValues()[0];
+  const toAdd = reserved.concat(Object.keys(incomingRow)).filter(function (h) {
+    return h && headers.indexOf(h) === -1;
+  });
+
+  if (toAdd.length) {
+    sheet.getRange(1, numCols + 1, 1, toAdd.length).setValues([toAdd]);
+  }
+}
+
+function uniqueHeaders_(headers) {
+  const seen = {};
+  return headers.filter(function (h) {
+    if (!h || seen[h]) return false;
+    seen[h] = true;
+    return true;
+  });
+}
+
+function findSubmissionRowIndex_(dataRows, headers, submissionId) {
+  const idx = headers.indexOf(SUBMISSION_ID_HEADER);
+  if (idx === -1 || !submissionId) return -1;
+
+  for (var i = 0; i < dataRows.length; i++) {
+    if (String(dataRows[i][idx] || '').trim() === submissionId) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+function rowObjectFromSheetRow_(headers, rowValues) {
+  const obj = {};
+  headers.forEach(function (h, i) {
+    if (h) obj[h] = rowValues[i];
+  });
+  return obj;
+}
+
+function isDuplicateSubmission_(row, dataRows, headers) {
+  const nameIdx = headers.indexOf('First Name');
+  const lastNameIdx = headers.indexOf('Last Name');
+  const phoneIdx = headers.indexOf('Mobile Phone');
+  const emailIdx = headers.indexOf('Personal Email');
+
+  const newName = normalize(row['First Name'] + ' ' + row['Last Name']);
+  const newPhone = normalizePhone(row['Mobile Phone']);
+  const newEmail = normalize(row['Personal Email']);
+
+  if (!newName || !newPhone || !newEmail || nameIdx === -1 || lastNameIdx === -1 || phoneIdx === -1 || emailIdx === -1) {
+    return false;
+  }
+
+  const submissionIdIdx = headers.indexOf(SUBMISSION_ID_HEADER);
+  const currentId = String(row[SUBMISSION_ID_HEADER] || '').trim();
+
+  return dataRows.some(function (r) {
+    if (submissionIdIdx !== -1 && currentId && String(r[submissionIdIdx] || '').trim() === currentId) {
+      return false;
+    }
+    const name = normalize(r[nameIdx] + ' ' + r[lastNameIdx]);
+    const phone = normalizePhone(r[phoneIdx]);
+    const email = normalize(r[emailIdx]);
+    return name === newName && phone === newPhone && email === newEmail;
+  });
+}
+
+function saveResumeToDrive_(resumeFile, submissionId) {
+  const folder = getOrCreateResumeFolder_();
+  const safeName = String(resumeFile.name || 'resume').replace(/[\\/:*?"<>|]+/g, '_');
+  const filename = submissionId + ' - ' + safeName;
+  const bytes = Utilities.base64Decode(resumeFile.data);
+  const blob = Utilities.newBlob(
+    bytes,
+    resumeFile.mimeType || 'application/octet-stream',
+    filename
+  );
+
+  const existing = folder.getFilesByName(filename);
+  while (existing.hasNext()) {
+    existing.next().setTrashed(true);
+  }
+
+  const file = folder.createFile(blob);
+  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+
+  return {
+    url: file.getUrl(),
+    name: safeName,
+  };
+}
+
+function getOrCreateResumeFolder_() {
+  const folders = DriveApp.getFoldersByName(RESUMES_FOLDER_NAME);
+  if (folders.hasNext()) {
+    return folders.next();
+  }
+  return DriveApp.createFolder(RESUMES_FOLDER_NAME);
+}
+
+function highlightRow_(sheet, rowNumber, numCols, color) {
+  const range = sheet.getRange(rowNumber, 1, 1, numCols);
+  if (!color) {
+    range.setBackground(null);
+    return;
+  }
+  range.setBackground(color);
 }
 
 function normalize(str) {
