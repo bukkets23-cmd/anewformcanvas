@@ -142,6 +142,7 @@ async function submitRowToSheet({ row, submissionId, force, resumeFile, completi
     });
     const result = await response.json();
     if (result.error) console.error('Google Sheet webhook error:', result.error);
+    if (result.resumeUploadError) console.warn('Resume upload to Drive failed (row was still saved):', result.resumeUploadError);
 
     if (result.submissionId) {
         try { sessionStorage.setItem(GCSP_SUBMISSION_ID_KEY, result.submissionId); } catch (e) { /* ignore */ }

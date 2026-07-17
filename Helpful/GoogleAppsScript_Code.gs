@@ -70,10 +70,19 @@ function doPost(e) {
 
     mergedRow[SUBMISSION_ID_HEADER] = submissionId;
 
+    // Uploading to Drive is a separate failure domain from writing the row
+    // (e.g. the Drive scope not yet being authorized after a redeploy) — never
+    // let a Drive problem lose the rest of the candidate's answers.
+    var resumeUploadError = '';
     if (resumeFile && resumeFile.data) {
-      const resumeMeta = saveResumeToDrive_(resumeFile, submissionId);
-      mergedRow[RESUME_LINK_HEADER] = resumeMeta.url;
-      mergedRow[RESUME_FILENAME_HEADER] = resumeMeta.name;
+      try {
+        const resumeMeta = saveResumeToDrive_(resumeFile, submissionId);
+        mergedRow[RESUME_LINK_HEADER] = resumeMeta.url;
+        mergedRow[RESUME_FILENAME_HEADER] = resumeMeta.name;
+      } catch (driveErr) {
+        resumeUploadError = String(driveErr && driveErr.message || driveErr);
+        if (!mergedRow[RESUME_FILENAME_HEADER]) mergedRow[RESUME_FILENAME_HEADER] = resumeFile.name || '';
+      }
     }
 
     const duplicate = targetRowIndex === -1 && isDuplicateSubmission_(mergedRow, dataRows, existingHeaders);
@@ -110,6 +119,7 @@ function doPost(e) {
       saved: true,
       submissionId: submissionId,
       updated: targetRowIndex !== -1,
+      resumeUploadError: resumeUploadError || undefined,
     });
   } catch (err) {
     return jsonOutput({ error: String(err && err.message || err), saved: false });
